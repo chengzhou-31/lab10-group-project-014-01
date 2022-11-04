@@ -14,5 +14,10 @@ Team Number: 01
 
 ## Application Details 
 - App Name: **QuickTix**
-- Description: Allows individual people to resell their tickets. Allows you to view people who are re-selling tickets to events you want, request to buy tickets, as well as selling tickets yourself. There is also a review system to check for scalpers or scammers.
-- Vision Statement: For people who want affordable tickets, **QuickTix** allows people to sell and buy tickets to each other. Unlike **Ticketmaster**, **QuickTix** allows you to connect directly to the re-seller and contact them directly for purchase.
+- Description: Provides a platform which allows individuals to resell their tickets for events to which they cannot attend. Enables registered users to view sellers who are offering tickets, purchase tickets of interest, as well as sell their own tickets. The website will also support a review system which will ensure that scalpers and scammers are flagged.
+
+
+- Vision Statement: For students who want affordable tickets, **QuickTix** connects those who cannot attend events to recuperate their losses and, in the process, provide an opportunity for others to attend their favorite events. Unlike **Ticketmaster**, **QuickTix** allows you to connect directly to the seller and builds a sense of community through the promotion of person to person transactions.
+
+
+- Communication Plan: Our team will maintain communication primarily through the use of Discord. Our alternative form of communication will be by cellphone.
