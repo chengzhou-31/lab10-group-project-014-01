@@ -8,6 +8,7 @@ CREATE TABLE users (
     phone varchar(11) not null
 );
 
+DROP TABLE IF EXISTS tickets CASCADE;
 CREATE TABLE tickets (
     ticket_id SERIAL primary key,
     price real not null,
@@ -17,6 +18,7 @@ CREATE TABLE tickets (
     time time
 );
 
+DROP TABLE IF EXISTS reviews CASCADE;
 CREATE TABLE reviews (
     review_id SERIAL primary key,
     date date,
@@ -25,6 +27,7 @@ CREATE TABLE reviews (
 );
 
 -- Seller to tickets
+DROP TABLE IF EXISTS users_to_tickets CASCADE;
 CREATE TABLE users_to_tickets (
     user_id not null,
     ticket_id not null,
@@ -41,6 +44,7 @@ CREATE TABLE tickets_to_users (
 )
 
 -- Shows reviews on user, not reviewer!!
+DROP TABLE IF EXISTS users_to_reviews CASCADE;
 CREATE TABLE users_to_reviews (
     user_id not null,
     review_id not null,
