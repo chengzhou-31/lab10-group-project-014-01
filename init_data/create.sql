@@ -5,7 +5,7 @@ CREATE TABLE users (
     password varchar(50) not null,
     email varchar(50) not null,
     name varchar(50) not null,
-    phone varchar(11) not null
+    phone varchar(11)
 );
 
 DROP TABLE IF EXISTS tickets CASCADE;
