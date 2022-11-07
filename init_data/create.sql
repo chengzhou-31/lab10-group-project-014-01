@@ -41,7 +41,7 @@ CREATE TABLE tickets_to_users (
     ticket_id int not null,
     FOREIGN KEY (user_id) REFERENCES users(user_id),
     FOREIGN KEY (ticket_id) REFERENCES tickets(ticket_id)
-)
+);
 
 -- Shows reviews on user, not reviewer!!
 DROP TABLE IF EXISTS users_to_reviews CASCADE;
