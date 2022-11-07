@@ -29,16 +29,16 @@ CREATE TABLE reviews (
 -- Seller to tickets
 DROP TABLE IF EXISTS users_to_tickets CASCADE;
 CREATE TABLE users_to_tickets (
-    user_id not null,
-    ticket_id not null,
+    user_id int not null,
+    ticket_id int not null,
     FOREIGN KEY (user_id) REFERENCES users(user_id),
     FOREIGN KEY (ticket_id) REFERENCES tickets(ticket_id)
 );
 
 -- Buyer to tickets
 CREATE TABLE tickets_to_users (
-    user_id not null,
-    ticket_id not null,
+    user_id int not null,
+    ticket_id int not null,
     FOREIGN KEY (user_id) REFERENCES users(user_id),
     FOREIGN KEY (ticket_id) REFERENCES tickets(ticket_id)
 )
@@ -46,8 +46,8 @@ CREATE TABLE tickets_to_users (
 -- Shows reviews on user, not reviewer!!
 DROP TABLE IF EXISTS users_to_reviews CASCADE;
 CREATE TABLE users_to_reviews (
-    user_id not null,
-    review_id not null,
+    user_id int not null,
+    review_id int not null,
     FOREIGN KEY (user_id) REFERENCES users(user_id),
     FOREIGN KEY (review_id) REFERENCES reviews(review_id)
 );
