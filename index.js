@@ -56,8 +56,14 @@ app.get('/', (req, res) => {
     res.render('pages/home');
 });
 
-tickets = db.any('SELECT * FROM tickets;');
+const query = 'SELECT * FROM tickets;';
+const tickets_data = () => {
+    db.any(query).then(data => {
+        return data;
+    });
+}
+
 
 app.get('/search/:query:filter', (req, res) => {
-    res.send(query);
+    res.send('asdf');
 });
