@@ -52,7 +52,7 @@ app.listen(3000);
 console.log('Server is listening on port 3000');
 
 
-//
+// Testing login page. Change to home later on.
 app.get('/', (req, res) => {
-    res.render('pages/home');
+    res.render('pages/login'); //change to home
 });
