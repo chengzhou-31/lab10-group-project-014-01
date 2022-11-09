@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
 const axios = require('axios');
+const { query } = require('express');
 
 // database configuration
 const dbConfig = {
@@ -53,4 +54,10 @@ console.log('Server is listening on port 3000');
 
 app.get('/', (req, res) => {
     res.render('pages/home');
+});
+
+tickets = db.any('SELECT * FROM tickets;');
+
+app.get('/search/:query:filter', (req, res) => {
+    res.send(query);
 });
