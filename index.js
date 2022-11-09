@@ -52,7 +52,21 @@ app.listen(3000);
 console.log('Server is listening on port 3000');
 
 
-// Testing login page. Change to home later on.
-app.get('/', (req, res) => {
-    res.render('pages/login'); //change to home
+
+
+
+app.get('/login', (req,res) => {
+    res.render('pages/login');
 });
+
+/*
+
+app.post('/login', async (req, res) => {
+    const query = "SELECT * FROM users WHERE username = $1;"
+    db.one(query, [req.body.username])
+        .then( async (valid) => {
+
+        })
+});
+
+*/
