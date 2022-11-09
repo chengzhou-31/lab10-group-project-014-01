@@ -7,6 +7,7 @@ const bcrypt = require('bcrypt');
 const axios = require('axios');
 
 // database configuration
+
 const dbConfig = {
     host: 'db',
     port: 5432,
@@ -15,7 +16,8 @@ const dbConfig = {
     password: process.env.POSTGRES_PASSWORD,
   };
   
-  const db = pgp(dbConfig);
+  
+  //const db = pgp(dbConfig);
   
   // test your database
   db.connect()
