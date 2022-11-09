@@ -21,3 +21,6 @@ Team Number: 01
 
 
 - Communication Plan: Our team will maintain communication primarily through the use of Discord. Our alternative form of communication will be by cellphone.
+
+## API Details
+**TODO**
