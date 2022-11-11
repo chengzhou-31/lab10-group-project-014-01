@@ -7,7 +7,7 @@ services:
       - '5432'
     volumes:
       - lab-10-group-project:/var/lib/postgresql/data
-      - ./src/init_data:/docker-entrypoint-initdb.d
+      - ./init_data:/docker-entrypoint-initdb.d
   web:
     image: node:lts
     user: 'node'
@@ -20,7 +20,7 @@ services:
     ports:
       - '3000:3000'
     volumes:
-      - ./src:/home/node/app
+      - ./:/home/node/app
     command: 'npm start'
 # This defines our volume(s), which will persist throughout startups.
 # If you want to get rid of a hanging volume, e.g. to test your database init,
