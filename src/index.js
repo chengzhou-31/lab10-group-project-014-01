@@ -43,7 +43,19 @@ app.post('/login', async (req, res) => {
   const query = "SELECT * FROM users WHERE username = $1;"
   db.one(query, [req.body.username])
       .then( async (valid) => {
+        const match = await bcrypt.compare(req.body.password, valid.password);
+
+        if (match){
+          req.session.user = {
+            api_key: process.env.API_KEY,
+          };
+          req.session.save();
+          res.redirect('/home');
+        }
 
       })
+      .catch( err => {
+        console.log(err);
+        res.render('pages/login', {message: "Username and Password do not match."});
+      })
 });
-

@@ -1,0 +1,17 @@
+<main>
+    <div class="col"><%- include ('../partials/message') %></div>
+    <div class="container">
+    <!-- THE REST OF YOUR HTML CODE GOES HERE -->
+        <h1>Login</h1>
+        <form action="/login" method = "post">
+            <p>Enter Username</p>
+                <input id="username" name="username">
+            <p>Enter Password</p>
+                <input id="password" name="password">
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+        <a href="../pages/register" class="btn btn-primary disabled" tabindex="-1" role="button" >Or create an account.</a>
+
+
+    </div>
+</main>
