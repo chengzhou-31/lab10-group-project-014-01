@@ -37,14 +37,13 @@ app.get('/login', (req,res) => {
   res.render('pages/login');
 });
 
-/*
+
 
 app.post('/login', async (req, res) => {
   const query = "SELECT * FROM users WHERE username = $1;"
   db.one(query, [req.body.username])
       .then( async (valid) => {
-        
+
       })
 });
 
-*/
