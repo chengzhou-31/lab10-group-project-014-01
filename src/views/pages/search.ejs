@@ -1,0 +1,42 @@
+<%- include ('../partials/header') %> 
+<%- include ('../partials/navbar') %> 
+
+<form action="/search_results" method="GET">
+  <div class="form-group">
+    <label class="form-label" for="searchInput">Search Keyword</label>
+    <input type="text" class="form-control" id="searchInput" name="searchInput">
+  </div>
+  <div>
+    <h2>
+      Filters:
+    </h2>
+  </div>
+  <div class="form-row">
+    <div class="col-auto my-1">
+      <label class="mr-sm-2" for="event_type">Event Type</label>
+      <select class="custom-select mr-sm-2" id="event_type" name="event_type">
+        <option selected>Choose</option>
+        <option value="concert">Concert</option>
+        <option value="circus show">Circus Show</option>
+        <option value="Stand up comedy">Stand Up Comedy</option>
+        <option value="Football game">Football game</option>
+      </select>
+    </div>
+    <div class="col-auto my-1">
+      <label class="mr-sm-2" for="location">Location</label>
+      <select class="custom-select mr-sm-2" id="location" name="location">
+        <option selected>Choose</option>
+        <option value="my moms house">My Moms House</option>
+        <option value="Denver">Denver</option>
+        <option value="Boulder">Boulder</option>
+        <option value="CU stadium">CU Stadium</option>
+      </select>
+    </div>
+    <div class="col-auto my-1">
+      
+    </div>
+  </div>
+  <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+<%- include ('../partials/footer') %>   
