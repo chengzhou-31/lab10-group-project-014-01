@@ -86,6 +86,9 @@ app.post('/addTicket', (req, res) =>{
     });
 });
 
+
+//Ticketmaster api call
+//TODO: add pages to load
 app.get('/ticketmaster', (req, res) => {
     axios({
         url: `https://app.ticketmaster.com/discovery/v2/events.json`,
