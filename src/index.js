@@ -48,11 +48,34 @@ app.use(
 );
 
 
+//The user whether or not they are logged in or not
+//Add more values
+const user = {
+    logged_in: false,
+    username: undefined,
+    email: undefined,
+}
+
+
+//Login page
+app.get("/login", (req, res) => {
+
+})
+
+
+
+//The index page should just render the home page
+app.get("/", (req, res) => {
+    res.redirect("views/pages/home");
+});
+
+
+
 //Adds a ticket to the database
 //TODO: Find what pages shouild be redirected to/rendered when complete or fails
 //TODO: Test it to make sure it kinda works,
 //TODO: Fill in the values that are passed to run the queries
-app.post('/addTicket', (req, res) =>{
+app.post('/ticket/add', (req, res) =>{
     //Grab the user who is adding a ticket
     const user = req.body.username;
 
@@ -87,8 +110,72 @@ app.post('/addTicket', (req, res) =>{
 });
 
 
+app.post('/ticket/add/test', (req, res) =>{
+    //Grab the user who is adding a ticket
+    const user = req.body.username;
+
+    //Insert the ticket into the ticket table
+    const insert = `INSERT INTO tickets (price, event_type, location, date, time)
+                   VALUES ($1, $2, $3, $4, $5) returning *;`;
+    
+    //Link the ticket to the user who added it.
+    //TODO: ticket_id needs to be looked at
+    const insertTicket = `INSERT INTO users_to_tickets (user_id, ticket_id)
+                VALUES((SELECT user_id FROM users WHERE $1 = username), (SELECT max(ticket_id) FROM tickets));`;
+
+    db.query(insert, [
+        req.body.price,
+        req.body.type,
+        req.body.loc,
+        req.body.data,
+        req.body.time,
+        user,
+    
+    ]) //Fill in what is passed in
+    .then(
+        function(data) {
+            res.status(201).json({
+                status: 'Adeed',
+                data: data,
+                message: 'added yes',
+            })
+        }
+        //db.query(insertTicket, [user]) //Fill in what is passed in
+        //.then(function (data) { 
+        // }
+        )
+        .catch((err) => {
+            res.render('page', {
+                error: true,
+                message: err.message,
+            })
+        })
+    .catch((err) => {
+        res.render('page', {
+            error: true,
+            message: err.message,
+        });
+    });
+});
+
+
+//Remove a ticket from the database
+app.post("/ticket/delete", (req, res) => {
+    db.task("delete-ticket", (task) => {
+        return task.batch([
+            task.none(
+
+            )
+        ])
+    })
+})
+
+
+
+
 //Ticketmaster api call
 //TODO: add pages to load
+//TODO: add results to pass
 app.get('/ticketmaster', (req, res) => {
     axios({
         url: `https://app.ticketmaster.com/discovery/v2/events.json`,
@@ -116,6 +203,13 @@ app.get('/ticketmaster', (req, res) => {
 
 });
 
+
+
+//When the user logs out. Should render a logout page, or notify the user that they logged out
+app.get("/logout", (req, res) => {
+    req.session.destroy();
+    res.render("pages/logout");
+});
 
 // make sure that the server is listening for client requests (listening on port 3000)
 app.listen(3000);
