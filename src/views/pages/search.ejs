@@ -8,11 +8,21 @@
       <input type="text" class="form-control" id="search" aria-label="search">
       <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">Filter by</button>
       <ul class="dropdown-menu dropdown-menu-end">
-        <li><a class="dropdown-item" href="">Action</a></li>
-        <li><a class="dropdown-item" href="">Another action</a></li>
-        <li><a class="dropdown-item" href="">Something else here</a></li>
+        <li><a class="dropdown-item" href="">Event Type</a></li>
+        <li><a class="dropdown-item" href="">Location</a></li>
+        <li><a class="dropdown-item" href="">Date</a></li>
         <li><hr class="dropdown-divider"></li>
-        <li><a class="dropdown-item" href="">Separated link</a></li>
+        <li>
+          <span class="dropdown-item-text">Price Range</span>
+          <div class="p-2">
+            <span class="dropdown-item-text" id="min">Min: </span>
+            <input type="range" class="form-range" min="0" max="500" step="0.5" id="minPrice">
+          </div>
+          <div class="p-2">
+            <span class="dropdown-item-text" id="max">Max: </span>
+            <input type="range" class="form-range" min="0" max="500" step="0.5" id="maxPrice">
+          </div>
+        </li>
       </ul>
     </div>  
     <% search_results.forEach(ticket => { %>
@@ -32,12 +42,25 @@
     const search_result = document.createElement('h1');
     const tickets = document.querySelectorAll('#ticket');
 
+    const maxPrice = document.querySelector('#maxPrice');
+    const minPrice = document.querySelector('#minPrice');
+    minPrice.addEventListener('input', e => {
+      const min = document.querySelector('#min').innerHTML = 'Min: ' + minPrice.value;
+    });
+    maxPrice.addEventListener('input', e => {
+      const max = document.querySelector('#max').innerHTML = 'Max: ' + maxPrice.value;
+    });
+
+
     input.addEventListener('input', event => {
       console.log(input.value);
       tickets.forEach(ticket => {
         let ticket_html = ticket.innerHTML.toLowerCase();
-        let input_value = input.value.toLowerCase();
-        if(ticket_html.includes(input_value)){
+        // let input_value = input.value.toLowerCase();
+        let input_value = input.value.toLowerCase().split(" ");
+        console.log(input_value);
+        // if(ticket_html.match(input_value)){
+        if(input_value.some(v => ticket_html.match(v))){
           ticket.hidden = false;
         } else {
           ticket.hidden = true;
