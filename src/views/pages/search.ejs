@@ -1,42 +1,87 @@
 <%- include ('../partials/header') %> 
 <%- include ('../partials/navbar') %> 
 
-<form action="/search_results" method="GET">
-  <div class="form-group">
-    <label class="form-label" for="searchInput">Search Keyword</label>
-    <input type="text" class="form-control" id="searchInput" name="searchInput">
-  </div>
-  <div>
-    <h2>
-      Filters:
-    </h2>
-  </div>
-  <div class="form-row">
-    <div class="col-auto my-1">
-      <label class="mr-sm-2" for="event_type">Event Type</label>
-      <select class="custom-select mr-sm-2" id="event_type" name="event_type">
-        <option selected>Choose</option>
-        <option value="concert">Concert</option>
-        <option value="circus show">Circus Show</option>
-        <option value="Stand up comedy">Stand Up Comedy</option>
-        <option value="Football game">Football game</option>
-      </select>
-    </div>
-    <div class="col-auto my-1">
-      <label class="mr-sm-2" for="location">Location</label>
-      <select class="custom-select mr-sm-2" id="location" name="location">
-        <option selected>Choose</option>
-        <option value="my moms house">My Moms House</option>
-        <option value="Denver">Denver</option>
-        <option value="Boulder">Boulder</option>
-        <option value="CU stadium">CU Stadium</option>
-      </select>
-    </div>
-    <div class="col-auto my-1">
-      
-    </div>
-  </div>
-  <button type="submit" class="btn btn-primary">Search</button>
-</form>
+<div class="container p-1 pt-5" id="search_container">
+  <h2><b>Search Anything</b></h2>
+  <form action="/search" method="GET">
+    <div class="input-group mb-3">
+      <input type="text" class="form-control" id="search" aria-label="search">
+      <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">Filter by</button>
+      <ul class="dropdown-menu dropdown-menu-end">
+        <li><a class="dropdown-item" href="">Action</a></li>
+        <li><a class="dropdown-item" href="">Another action</a></li>
+        <li><a class="dropdown-item" href="">Something else here</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item" href="">Separated link</a></li>
+      </ul>
+    </div>  
+    <% search_results.forEach(ticket => { %>
+      <div class="card mb-3" id="ticket" hidden>
+        <div class="card-body">
+          <h5 class="card-title"><b><%- ticket.name %> </b></h5>
+          <p class="card-subtitle mb-2 text-muted"><%- ticket.event_type %> </p>
+          <p class="card-text text-reset"><%- ticket.location %> </p>
+        </div>
+      </div>
+    <% }); %>  
+  </form>
+
+  <script type="text/javascript">
+    const input = document.querySelector('#search');
+    const container = document.querySelector('#search_container');
+    const search_result = document.createElement('h1');
+    const tickets = document.querySelectorAll('#ticket');
+
+    input.addEventListener('input', event => {
+      console.log(input.value);
+      tickets.forEach(ticket => {
+        let ticket_html = ticket.innerHTML.toLowerCase();
+        let input_value = input.value.toLowerCase();
+        if(ticket_html.includes(input_value)){
+          ticket.hidden = false;
+        } else {
+          ticket.hidden = true;
+        }
+      })
+    });
+  </script>
+</div>
+
 
 <%- include ('../partials/footer') %>   
+
+<!-- <div class="form-group">
+  <label class="form-label" for="searchInput">Search Keyword</label>
+  <input type="text" class="form-control" id="searchInput" name="searchInput">
+</div>
+<div>
+  <h2>
+    Filters:
+  </h2>
+</div>
+<div class="form-row">
+  <div class="col-auto my-1">
+    <label class="mr-sm-2" for="event_type">Event Type</label>
+    <select class="custom-select mr-sm-2" id="event_type" name="event_type">
+      <option selected>Choose</option>
+      <option value="concert">Concert</option>
+      <option value="circus show">Circus Show</option>
+      <option value="Stand up comedy">Stand Up Comedy</option>
+      <option value="Football game">Football game</option>
+    </select>
+  </div>
+  <div class="col-auto my-1">
+    <label class="mr-sm-2" for="location">Location</label>
+    <select class="custom-select mr-sm-2" id="location" name="location">
+      <option selected>Choose</option>
+      <option value="my moms house">My Moms House</option>
+      <option value="Denver">Denver</option>
+      <option value="Boulder">Boulder</option>
+      <option value="CU stadium">CU Stadium</option>
+    </select>
+  </div>
+  <div class="col-auto my-1">
+    
+  </div>
+</div>
+<button type="submit" class="btn btn-primary">Search</button> -->

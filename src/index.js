@@ -59,7 +59,9 @@ app.get('/search', (req, res) => {
     const query = "SELECT * FROM tickets;";
 
     db.any(query).then(data => {
-        res.render('pages/search');
+        res.render('pages/search', {
+            search_results: data
+        });
     }).catch(error => {
         res.render("pages/register", {
             error: true,
