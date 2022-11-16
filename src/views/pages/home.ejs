@@ -9,12 +9,15 @@
         of interest, as well as sell their own tickets! Be respectful and enjoy the events!!
     </p>    
     <h1>Upcoming First Hand Events:</h1>
-    <!-- CARD PARTIAL -->
+    <% object = upcoming_events %>
+    <%- include ('../partials/Cards') %>
     <h1>Upcoming Second Hand Events:</h1>
-    <!-- CARD PARTIAL -->
-    <% if (user) { %>
+    <% object = tickets_for_sale %>
+    <%- include ('../partials/Cards') %>
+    <% if (logged_in) { %>
       <h1>Your Saved Tickets:</h1>
-      <!-- CARD PARTIAL -->
+      <% object = interested %>
+      <%- include ('../partials/Cards') %>
     <% } %>
 
   </div>
