@@ -58,9 +58,9 @@ app.post('/login', async (req, res) => {
   const query = "SELECT * FROM users WHERE username = $1;"
   db.one(query, [req.body.username])
       .then( async (valid) => {
-        const match = await bcrypt.compare(req.body.password, valid.password);
-
-        if (match){
+        //const match = await bcrypt.compare(req.body.password, valid.password);
+        if (req.body.password === valid.password){ //change back to match alter
+        console.log("It worked");
           req.session.user = {
             api_key: process.env.API_KEY,
           };
