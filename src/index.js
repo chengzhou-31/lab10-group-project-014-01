@@ -170,7 +170,10 @@ app.post("/ticket/delete", (req, res) => {
     })
 })
 
-
+app.get("/home", (req, res) => {
+    const query = `;`;
+    db.query(query, [])
+})
 
 
 //Ticketmaster api call

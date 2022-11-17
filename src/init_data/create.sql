@@ -51,3 +51,10 @@ CREATE TABLE users_to_reviews (
     FOREIGN KEY (user_id) REFERENCES users(user_id),
     FOREIGN KEY (review_id) REFERENCES reviews(review_id)
 );
+
+DROP TABLE IF EXISTS interested_in (
+    user_id int NOT NULL,
+    ticket_id int NOT NULL,
+    FOREIGN KEY (ticket_id) REFERENCES tickets(ticket_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
