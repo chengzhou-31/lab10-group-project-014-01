@@ -54,6 +54,7 @@ CREATE TABLE users_to_reviews (
     FOREIGN KEY (review_id) REFERENCES reviews(review_id)
 );
 
+-- Lists the tickets that a user is interested in
 DROP TABLE IF EXISTS interested_in (
     user_id int NOT NULL,
     ticket_id int NOT NULL,
