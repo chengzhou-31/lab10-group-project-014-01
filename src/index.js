@@ -335,15 +335,6 @@ app.listen(3000);
 console.log('Server is listening on port 3000');
 
 
-
-
-
-
-
-
-
-
-
 //Log in already matched and updated to what we would need
 //Shouldn't need this
 app.get('/login', (req,res) => {
