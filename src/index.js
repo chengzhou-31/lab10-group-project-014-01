@@ -49,13 +49,13 @@ app.use(
     })
 );
 
-// make sure that the server is listening for client requests (listening on port 3000)
-app.listen(3000);
-console.log('Server is listening on port 3000');
 
 
-app.get('/', (req, res) => {
-    res.render('pages/home');
+//When the user logs out. Should render a logout page, or notify the user that they logged out
+
+app.get("/logout", (req, res) => {
+    req.session.destroy();
+    res.render("pages/logout");
 });
 
 app.get('/register', (req,res) => {
@@ -66,7 +66,17 @@ app.get('/profile', (req, res) => {
     res.render('pages/profile');
 });
 
+    //Link the ticket to the user who added it.
+    //TODO: ticket_id needs to be looked at
+    //const insertTicket = `INSERT INTO users_to_tickets (user_id, ticket_id) VALUES((SELECT user_id FROM users WHERE ${user} = username), (SELECT max(ticket_id) FROM tickets));`;
 
+// make sure that the server is listening for client requests (listening on port 3000)
+app.listen(3000);
+console.log('Server is listening on port 3000');
+
+
+//Log in already matched and updated to what we would need
+//Shouldn't need this
 app.get('/login', (req,res) => {
   res.render('pages/login');
 });
