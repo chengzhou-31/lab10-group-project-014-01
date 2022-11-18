@@ -155,8 +155,8 @@ app.get("/home", (req, res) => {
     .then(({interested, forSale, comingUp}) => {
         // Then render the home page with the results from the query.
         res.render("pages/home", {
-            logged_in: logged,
-            interested: interested,
+            logged_in: req.session.user.logged_in,
+            Interested: interested,
             tickets_for_sale: forSale,
             upcoming_events: comingUp,
         });
@@ -347,15 +347,8 @@ app.listen(3000);
 console.log('Server is listening on port 3000');
 
 
-
-
-
-
-
-
-
-
-
+//Log in already matched and updated to what we would need
+//Shouldn't need this
 app.get('/login', (req,res) => {
   res.render('pages/login');
 });
