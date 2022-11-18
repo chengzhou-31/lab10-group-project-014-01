@@ -155,7 +155,7 @@ app.get("/home", (req, res) => {
     .then(({interested, forSale, comingUp}) => {
         // Then render the home page with the results from the query.
         res.render("pages/home", {
-            logged_in: req.session.user.logged_in,
+            logged_in: logged,
             Interested: interested,
             tickets_for_sale: forSale,
             upcoming_events: comingUp,
