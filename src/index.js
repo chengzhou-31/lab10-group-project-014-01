@@ -170,8 +170,50 @@ app.get("/home", (req, res) => {
 
 
 
+//If a user is interedted in a ticket it should be added to the DB
+app.post('/interested/add', (req, res) => {
+    //Query to add the ticket.
+    //Returns the data inserted
+    const query = `INSERT INTO interested_in(user_id, ticket_id)
+            VALUES($1, $2) RETURNING *;`;
+
+    db.query(query, [req.body.user.id, req.body.ticket_id])
+    .then(function(data){
+        //Just returns to console/log that it was inserted
+        res.status(201).json({
+            status: 'success',
+            data: data,
+            message: 'New ticket interested in',
+        })
+    })
+    .catch(err => {
+        //If it can't be inserted just render home
+        console.log(err.message)
+        res.render('/home');
+    });
+});
 
 
+
+//In the case the user is no longer interested in the ticket
+app.post('/interested/remove', (req, res) => {
+    //Query to remove the ticket the user is interested in
+    const query = `DELETE FROM interested_in WHERE user_id = $1 AND ticket_id = $2;`;
+
+    db.any(query, [req.body.user.id, req.body.ticket_id])
+    .then(function(data) {
+        //If successful, we return that it was removed
+        res.status(200).json({
+            status: 'Removed successfuly',
+            data: data,
+            message: 'Removed',
+        })
+    })
+    .catch((err) => {
+        //Error if could not be deleted
+        return console.log(err);
+    });
+});
 
 
 
@@ -185,14 +227,20 @@ app.post('/ticket/add', (req, res) =>{
 
     //Insert the ticket into the ticket table
     const insert = `INSERT INTO tickets (price, event_type, location, date, time)
-                   VALUES ($1, $2, $3, $3, $4, $5);`;
+                   VALUES ($1, $2, $3, $4, $5) returning *;`;
     
     //Link the ticket to the user who added it.
     //TODO: ticket_id needs to be looked at
     const insertTicket = `INSERT INTO users_to_tickets (user_id, ticket_id)
-                VALUES((SELECT user_id FROM users WHERE ${user} = username), (SELECT max(ticket_id) FROM tickets));`;
+                VALUES((SELECT user_id FROM users WHERE $1 = username), (SELECT max(ticket_id) FROM tickets));`;
 
-    db.query(insert, []) //Fill in what is passed in
+    db.query(insert, [
+        req.body.price,
+        req.body.type,
+        req.body.loc,
+        req.body.data,
+        req.body.time,
+        user,
     .then(
         db.query(insertTicket, []) //Fill in what is passed in
         .then(
@@ -281,6 +329,7 @@ app.post("/ticket/delete", (req, res) => {
                     ticket_id = $1;`,
                     []
             ),
+            
         ]);
     })
     .then(
@@ -348,34 +397,6 @@ app.listen(3000);
 console.log('Server is listening on port 3000');
 
 
-//Log in already matched and updated to what we would need
-//Shouldn't need this
-app.get('/login', (req,res) => {
-  res.render('pages/login');
-});
-
-app.post('/login', async (req, res) => {
-  const query = "SELECT * FROM users WHERE username = $1;"
-  db.one(query, [req.body.username])
-      .then( async (valid) => {
-        //const match = await bcrypt.compare(req.body.password, valid.password);
-        if (req.body.password === valid.password){ //change back to match later
-        console.log("It worked");
-          req.session.user = {
-            api_key: process.env.API_KEY,
-          };
-          req.session.save();
-          res.redirect('/home');
-        }
-
-      })
-      .catch( err => {
-        console.log(err);
-        res.render('pages/login', {message: "Username and Password do not match."});
-      })
-});
-
-
 app.get('/search', (req, res) => {
     const query = "SELECT * FROM tickets;";
 
@@ -390,69 +411,3 @@ app.get('/search', (req, res) => {
         });
     });
 });
-
-// app.get('/search_results', (req, res) => {
-//     const re = new RegExp(req.body.searchInput, )
-//     var query = `SELECT * FROM tickets`;
-//     var count = 0;
-
-//     if (req.body.event_type){
-//         query = query + `WHERE event_type = '${req.body.event_type}'`;
-//         count = 1;
-//     }
-    
-//     if (req.body.location){
-//         if (count){
-//             query = query + `AND location = '${req.body.location}'`;
-//         }
-//         else {
-//             query = query + `WHERE location = '${req.body.location}'`;
-//             count = 1;
-//         }
-//     }
-
-//     if (req.body.price){
-//         if (count){
-//             query = query + `AND price <= '${req.body.price}'`;
-//         }
-//         else {
-//             query = query + `WHERE price <= '${req.body.price}'`;
-//             count = 1;
-//         }
-//     }
-    
-//     if (req.body.date){
-//         if (count){
-//             query = query + `AND date = '${req.body.date}'`;
-//         }
-//         else {
-//             query = query + `WHERE date = '${req.body.date}'`;
-//             count = 1;
-//         }
-//     }
-
-//     if (req.body.time){
-//         if (count){
-//             query = query + `AND time = '${req.body.time}'`;
-//         }
-//         else {
-//             query = query + `WHERE time = '${req.body.time}'`;
-//             count = 1;
-//         }
-//     }
-
-//     query = query + `AND tickets.event_type ~* $1 AND tickets.location ~* $1;`;
-//     const values = [re];
-
-//     db.one(query, values)
-//       .then((results) =>{
-//         res.render("pages/search_results", {results});
-//       })
-//       .catch((err) => {
-//         res.render("pages/search", {
-//             results: [],
-//             error: true,
-//             message: err.message,
-//         });
-//       });
-// });
