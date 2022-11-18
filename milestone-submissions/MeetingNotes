@@ -23,4 +23,46 @@ We should also be creating checkmarks
 -Make maybe the first database, and create a ticket prices table.
 
 
+Third TA Meeting:
+16 Nov 22
+Discussed Checkout page - going with a notification system.
+Showed Demo:
+Liam:
+    home page
+    Cards (merging)
+Cheng:
+    Search functionality
+    Working on filter
+    “Button for contacting seller”
+    Good demo
+Diego:
+    Login page
+    Work on profile page next
+Mat:
+    Homepage API
+    Ticket selection on cards
+    Can API be used for second hand tickets?
+    Continue testing API functionality
+Louis:
+    Two styles of cards
+    Bootstrap card classes
+    Table notation form
+    Accessibility dependent on logged in or not
+
+Get the majority of work done before break and prepare for presentation the Friday after break.
+Sign up for a presentation slot.
+
+Pointers:
+Ensure all code is merged and up to date.
+Plan out future work and create required branches.
+Make another priority assessment.
+Profile Page - adding ticket - major functionality that needs to 
+Contact Model notifications would require another table.
+
+How to integrate second hand tickets.
+
+
+
+
+
 

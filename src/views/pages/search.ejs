@@ -1,8 +1,8 @@
 <%- include ('../partials/header') %> 
 <%- include ('../partials/navbar') %> 
-
+<body class="body">
 <div class="container p-1 pt-5" id="search_container">
-  <h2><b>Search Anything</b></h2>
+  <h1><b>Search Anything</b></h1>
   <form action="/search" method="GET">
     <div class="input-group mb-3">
       <input type="text" class="form-control" id="search" aria-label="search">
@@ -69,6 +69,7 @@
     });
   </script>
 </div>
+</body>
 
 
 <%- include ('../partials/footer') %>   

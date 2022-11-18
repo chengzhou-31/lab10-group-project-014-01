@@ -53,17 +53,21 @@ app.use(
 app.listen(3000);
 console.log('Server is listening on port 3000');
 
+
 app.get('/', (req, res) => {
     res.render('pages/home');
 });
 
 
-
+app.get('/profile', (req, res) => {
+    res.render('pages/profile');
+});
 
 
 app.get('/login', (req,res) => {
   res.render('pages/login');
 });
+
 
 app.post('/login', async (req, res) => {
   const query = "SELECT * FROM users WHERE username = $1;"
@@ -71,7 +75,6 @@ app.post('/login', async (req, res) => {
       .then( async (valid) => {
         //const match = await bcrypt.compare(req.body.password, valid.password);
         if (req.body.password === valid.password){ //change back to match later
-        console.log("It worked");
           req.session.user = {
             api_key: process.env.API_KEY,
           };
