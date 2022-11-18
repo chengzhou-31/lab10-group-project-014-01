@@ -54,7 +54,7 @@ app.use(
 
 //The index page should just render the home page
 app.get("/", (req, res) => {
-    res.redirect("views/pages/home");
+    res.redirect("/home");
 });
 
 //The user whether or not they are logged in or not
