@@ -241,6 +241,7 @@ app.post('/ticket/add', (req, res) =>{
         req.body.data,
         req.body.time,
         user,
+    ])
     .then(
         db.query(insertTicket, []) //Fill in what is passed in
         .then(
