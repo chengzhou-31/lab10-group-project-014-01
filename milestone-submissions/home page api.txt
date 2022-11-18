@@ -1,0 +1,51 @@
+Example of what the API call would look like.
+Scheduled to change.
+
+{
+    "logged_in": T/F (Based on if the user is logged in or not. Used to help display if interested should be listed)
+    "interested": [List of tickets the user is interested in]
+    "tickets_for_sale": [List of the tickets that will be for sale],
+    "upcoming_events": [List of tickets available and still up for purchase],
+}
+
+
+ex.
+{
+    "logged_in": False,
+    "Interested": [{
+            "Price": 19.99,
+            "Type": "Concert",
+            "Location": "Boulder",
+            "Date": "2022-11-11",
+            "Time": "null"},
+            {
+            "Price": 5,
+            "Type": "Comedy Show",
+            "Location": "Denver",
+            "Date": "2022-12-31",
+            "Time": "null"}],
+    "tickets_for_sale":[{
+            "Price": 25,
+            "Type": "Football game",
+            "Location": "Boulder",
+            "Date": "2022-11-29",
+            "Time": "null"},
+            {
+            "Price": 250,
+            "Type": "Harlem Globe Trotters",
+            "Location": "lousiville",
+            "Date": "2023-05-21",
+            "Time": "123000"}],
+    "upcoming_events":[{
+            "Price": 25,
+            "Type": "Football game",
+            "Location": "Boulder",
+            "Date": "2022-11-29",
+            "Time": "null"},
+            {
+            "Price": 250,
+            "Type": "Harlem Globe Trotters",
+            "Location": "lousiville",
+            "Date": "2023-05-21",
+            "Time": "123000"}],
+}
