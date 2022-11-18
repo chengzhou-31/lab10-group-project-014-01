@@ -26,9 +26,9 @@ app.listen(3000);
 console.log('Server is listening on port 3000');
 
 app.get('/', (req, res) =>{
-    res.redirect('/test');
+    res.redirect('/home');
 });
 
-app.get('/test', (req, res) =>{
-  res.render('pages/test.ejs');
+app.get('/home', (req, res) =>{
+  res.render('pages/home');
 });
