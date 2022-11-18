@@ -50,6 +50,13 @@ app.use(
 );
 
 
+
+
+//The index page should just render the home page
+app.get("/", (req, res) => {
+    res.redirect("views/pages/home");
+});
+
 //The user whether or not they are logged in or not
 //Add more values
 //BUG: User undefined if not logged in?
@@ -102,10 +109,11 @@ app.post("/login", async (req, res) => {
 
 
 
-//The index page should just render the home page
-app.get("/", (req, res) => {
-    res.redirect("/home");
-});
+
+//No register?
+
+
+
 
 
 //The home page should send a list of stuff to display.
@@ -176,8 +184,8 @@ app.get("/home", (req, res) => {
 
 //Adds a ticket to the database
 //TODO: Find what pages shouild be redirected to/rendered when complete or fails
-//TODO: Test it to make sure it kinda works,
-//TODO: Fill in the values that are passed to run the queries
+// It works
+//TODO: Fill in the values that are passed to run the queries (Should be req.body?)
 app.post('/ticket/add', (req, res) =>{
     //Grab the user who is adding a ticket
     const user = req.body.username;
@@ -263,6 +271,7 @@ app.post('/ticket/add/test', (req, res) =>{
 
 
 //Remove a ticket from the database
+// Still needs some work to it. Doesn't fully delete a ticket needs more.
 app.post("/ticket/delete", (req, res) => {
     db.task("delete-ticket", (task) => {
         return task.batch([
@@ -302,6 +311,7 @@ app.post("/ticket/delete", (req, res) => {
 //Ticketmaster api call
 //TODO: add pages to load
 //TODO: add results to pass
+//TODO: Need to put keyword based on what the user is trying to find
 //Should only be used when trying to find some tickets?
 app.get('/ticketmaster', (req, res) => {
     axios({
@@ -347,15 +357,8 @@ app.listen(3000);
 console.log('Server is listening on port 3000');
 
 
-
-
-
-
-
-
-
-
-
+//Log in already matched and updated to what we would need
+//Shouldn't need this
 app.get('/login', (req,res) => {
   res.render('pages/login');
 });
@@ -382,6 +385,7 @@ app.post('/login', async (req, res) => {
 });
 
 
+//Cheng's search feature
 app.get('/search', (req, res) => {
     const query = "SELECT * FROM tickets;";
 
@@ -396,6 +400,9 @@ app.get('/search', (req, res) => {
         });
     });
 });
+
+
+//Maybe don't need this?
 
 // app.get('/search_results', (req, res) => {
 //     const re = new RegExp(req.body.searchInput, )

@@ -55,8 +55,8 @@ CREATE TABLE users_to_reviews (
 );
 
 -- Lists the tickets that a user is interested in
-DROP TABLE IF EXISTS interested_in;
-CREATE TABLE interested_in (
+DROP TABLE IF EXISTS interested_in CASCADE;
+CREATE TABLE interested_in(
     user_id int NOT NULL,
     ticket_id int NOT NULL,
     FOREIGN KEY (ticket_id) REFERENCES tickets(ticket_id),
