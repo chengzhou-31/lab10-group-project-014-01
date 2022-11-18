@@ -6,6 +6,8 @@ const session = require('express-session');
 const bcrypt = require('bcrypt');
 const axios = require('axios');
 
+
+
 // database configuration
 const dbConfig = {
     host: 'db',
@@ -54,6 +56,36 @@ console.log('Server is listening on port 3000');
 app.get('/', (req, res) => {
     res.render('pages/home');
 });
+
+
+
+
+
+app.get('/login', (req,res) => {
+  res.render('pages/login');
+});
+
+app.post('/login', async (req, res) => {
+  const query = "SELECT * FROM users WHERE username = $1;"
+  db.one(query, [req.body.username])
+      .then( async (valid) => {
+        //const match = await bcrypt.compare(req.body.password, valid.password);
+        if (req.body.password === valid.password){ //change back to match later
+        console.log("It worked");
+          req.session.user = {
+            api_key: process.env.API_KEY,
+          };
+          req.session.save();
+          res.redirect('/home');
+        }
+
+      })
+      .catch( err => {
+        console.log(err);
+        res.render('pages/login', {message: "Username and Password do not match."});
+      })
+});
+
 
 app.get('/search', (req, res) => {
     const query = "SELECT * FROM tickets;";
