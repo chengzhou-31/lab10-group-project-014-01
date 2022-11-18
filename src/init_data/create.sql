@@ -11,6 +11,7 @@ CREATE TABLE users (
 DROP TABLE IF EXISTS tickets CASCADE;
 CREATE TABLE tickets (
     ticket_id SERIAL primary key,
+    name varchar(100) not null,
     price real not null,
     event_type varchar(50),
     location varchar(50),
@@ -27,8 +28,8 @@ CREATE TABLE reviews (
 );
 
 -- Seller to tickets
-DROP TABLE IF EXISTS users_to_tickets CASCADE;
-CREATE TABLE users_to_tickets (
+DROP TABLE IF EXISTS seller_to_tickets CASCADE;
+CREATE TABLE seller_to_tickets (
     user_id int not null,
     ticket_id int not null,
     FOREIGN KEY (user_id) REFERENCES users(user_id),
@@ -36,8 +37,9 @@ CREATE TABLE users_to_tickets (
 );
 
 -- Buyer to tickets
-CREATE TABLE tickets_to_users (
-    user_id int not null,
+DROP TABLE IF EXISTS buyer_to_tickets CASCADE;
+CREATE TABLE buyer_to_tickets (
+    user_id int,
     ticket_id int not null,
     FOREIGN KEY (user_id) REFERENCES users(user_id),
     FOREIGN KEY (ticket_id) REFERENCES tickets(ticket_id)
@@ -50,4 +52,13 @@ CREATE TABLE users_to_reviews (
     review_id int not null,
     FOREIGN KEY (user_id) REFERENCES users(user_id),
     FOREIGN KEY (review_id) REFERENCES reviews(review_id)
+);
+
+-- Lists the tickets that a user is interested in
+DROP TABLE IF EXISTS interested_in CASCADE;
+CREATE TABLE interested_in(
+    user_id int NOT NULL,
+    ticket_id int NOT NULL,
+    FOREIGN KEY (ticket_id) REFERENCES tickets(ticket_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
