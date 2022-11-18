@@ -130,6 +130,7 @@ app.get("/home", (req, res) => {
 
 
     var logged = false;
+    console.log(req.session.user);
     if(req.session.user === undefined){
         logged = false;
     } else {
@@ -156,7 +157,7 @@ app.get("/home", (req, res) => {
         // Then render the home page with the results from the query.
         res.render("pages/home", {
             logged_in: logged,
-            Interested: interested,
+            interested: interested,
             tickets_for_sale: forSale,
             upcoming_events: comingUp,
         });
@@ -335,7 +336,7 @@ app.get('/ticketmaster', (req, res) => {
 //When the user logs out. Should render a logout page, or notify the user that they logged out
 app.get("/logout", (req, res) => {
     req.session.destroy();
-    res.render("pages/logout");
+    res.render("/home");
 });
 
 
