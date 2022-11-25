@@ -50,6 +50,7 @@ app.use(
 );
 
 
+<<<<<<< HEAD
 
 
 //The index page should just render the home page
@@ -57,14 +58,17 @@ app.get("/", (req, res) => {
     res.redirect("/home");
 });
 
+=======
+>>>>>>> origin/main
 //The user whether or not they are logged in or not
 //Add more values
+//BUG: User undefined if not logged in?
 const user = {
     logged_in: false,
     username: undefined,
     email: undefined,
     id: undefined,
-}
+};
 
 
 //Login page
@@ -108,11 +112,10 @@ app.post("/login", async (req, res) => {
 
 
 
-
-//No register?
-
-
-
+//The index page should just render the home page
+app.get("/", (req, res) => {
+    res.redirect("/home");
+});
 
 
 //The home page should send a list of stuff to display.
@@ -125,9 +128,9 @@ app.post("/login", async (req, res) => {
 app.get("/home", (req, res) => {
     //Need to test
     //Might return an error if not logged in?
-    const interestedQuery = `SELECT * FROM tickets
-                        INNER JOIN interested_in ON user_id = $1
-                        WHERE ticket_id = $2;`;
+    const interestedQuery = `SELECT * FROM tickets t
+                        INNER JOIN interested_in i ON user_id = $1
+                        WHERE t.ticket_id = i.ticket_id;`;
     const forSaleQuery = `SELECT * FROM tickets LIMIT 10;`;
 
 
@@ -135,18 +138,34 @@ app.get("/home", (req, res) => {
     const comingUpQuery = `SELECT * FROM tickets 
                         WHERE CURRENT_DATE BETWEEN date_trunc('month', CURRENT_DATE) AND (date_trunc('month', CURRENT_DATE) + interval '1 month - 1 second');`;
 
+
+    var logged = false;
+    if(req.session.user === undefined){
+        logged = false;
+    } else {
+        logged = true;
+    }
     // Do all of the queries
     db.task('Homepage-contents', async (task) => {
-        const intereseted = await task.any(interestedQuery);
+        //Check if the user is logged in.
+        var interested = [];
+        //If they aren't there is nothing to display for interested
+        if(!logged){
+            interested = [];
+        } else {
+            //If they are process the query
+            interested = await task.any(interestedQuery, [req.session.user.id]);
+        }
+
         const forSale = await task.any(forSaleQuery);
         const comingUp = await task.any(comingUpQuery);
         // Does the queries and will wait until all have been completed before proceeding
-        return {intereseted, forSale, comingUp};
+        return {interested, forSale, comingUp};
     })
     .then(({interested, forSale, comingUp}) => {
         // Then render the home page with the results from the query.
         res.render("pages/home", {
-            logged_in: req.session.user.logged_in,
+            logged_in: logged,
             Interested: interested,
             tickets_for_sale: forSale,
             upcoming_events: comingUp,
@@ -160,10 +179,15 @@ app.get("/home", (req, res) => {
 
 
 
+
+
+
+
+
 //Adds a ticket to the database
 //TODO: Find what pages shouild be redirected to/rendered when complete or fails
-// It works
-//TODO: Fill in the values that are passed to run the queries (Should be req.body?)
+//TODO: Test it to make sure it kinda works,
+//TODO: Fill in the values that are passed to run the queries
 app.post('/ticket/add', (req, res) =>{
     //Grab the user who is adding a ticket
     const user = req.body.username;
@@ -249,7 +273,6 @@ app.post('/ticket/add/test', (req, res) =>{
 
 
 //Remove a ticket from the database
-// Still needs some work to it. Doesn't fully delete a ticket needs more.
 app.post("/ticket/delete", (req, res) => {
     db.task("delete-ticket", (task) => {
         return task.batch([
@@ -289,7 +312,6 @@ app.post("/ticket/delete", (req, res) => {
 //Ticketmaster api call
 //TODO: add pages to load
 //TODO: add results to pass
-//TODO: Need to put keyword based on what the user is trying to find
 //Should only be used when trying to find some tickets?
 app.get('/ticketmaster', (req, res) => {
     axios({
@@ -335,15 +357,6 @@ app.listen(3000);
 console.log('Server is listening on port 3000');
 
 
-
-
-
-
-
-
-
-
-
 //Log in already matched and updated to what we would need
 //Shouldn't need this
 app.get('/login', (req,res) => {
@@ -372,7 +385,6 @@ app.post('/login', async (req, res) => {
 });
 
 
-//Cheng's search feature
 app.get('/search', (req, res) => {
     const query = "SELECT * FROM tickets;";
 
@@ -387,3 +399,72 @@ app.get('/search', (req, res) => {
         });
     });
 });
+<<<<<<< HEAD
+=======
+
+// app.get('/search_results', (req, res) => {
+//     const re = new RegExp(req.body.searchInput, )
+//     var query = `SELECT * FROM tickets`;
+//     var count = 0;
+
+//     if (req.body.event_type){
+//         query = query + `WHERE event_type = '${req.body.event_type}'`;
+//         count = 1;
+//     }
+    
+//     if (req.body.location){
+//         if (count){
+//             query = query + `AND location = '${req.body.location}'`;
+//         }
+//         else {
+//             query = query + `WHERE location = '${req.body.location}'`;
+//             count = 1;
+//         }
+//     }
+
+//     if (req.body.price){
+//         if (count){
+//             query = query + `AND price <= '${req.body.price}'`;
+//         }
+//         else {
+//             query = query + `WHERE price <= '${req.body.price}'`;
+//             count = 1;
+//         }
+//     }
+    
+//     if (req.body.date){
+//         if (count){
+//             query = query + `AND date = '${req.body.date}'`;
+//         }
+//         else {
+//             query = query + `WHERE date = '${req.body.date}'`;
+//             count = 1;
+//         }
+//     }
+
+//     if (req.body.time){
+//         if (count){
+//             query = query + `AND time = '${req.body.time}'`;
+//         }
+//         else {
+//             query = query + `WHERE time = '${req.body.time}'`;
+//             count = 1;
+//         }
+//     }
+
+//     query = query + `AND tickets.event_type ~* $1 AND tickets.location ~* $1;`;
+//     const values = [re];
+
+//     db.one(query, values)
+//       .then((results) =>{
+//         res.render("pages/search_results", {results});
+//       })
+//       .catch((err) => {
+//         res.render("pages/search", {
+//             results: [],
+//             error: true,
+//             message: err.message,
+//         });
+//       });
+// });
+>>>>>>> origin/main
