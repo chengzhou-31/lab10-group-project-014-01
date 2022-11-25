@@ -37,6 +37,7 @@ CREATE TABLE seller_to_tickets (
 );
 
 -- Buyer to tickets
+-- Not used?
 DROP TABLE IF EXISTS buyer_to_tickets CASCADE;
 CREATE TABLE buyer_to_tickets (
     user_id int,

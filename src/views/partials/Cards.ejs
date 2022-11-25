@@ -1,17 +1,24 @@
 <div class="card-deck">
     <% object.forEach(event => { %>
         <div class="card">
+            <!-- Image of the event. Probably just change to display our logo or remove in general? -->
             <img class="card-img-top" src="..." alt="Card image cap">
             <div class="card-body">
-              <h5 class="card-title">Event Title: <%= event.title %></h5>
+
+              <!-- Basic info about the ticket -->
+              <h5 class="card-title">Event Title: <%= event.name %></h5>
               <h5 class="cart-title">Price: $<%= event.price %></h5>
               <h5 class="cart-title">Location: <%= event.location %></h5>
               <h5 class="cart-title">Date: <%= event.date %></h5>
-              <a href="<%= event.url %>" class="btn btn-primary"><button>Book</button></a>
+              <a href="/userpage" class="btn btn-primary"><button>Book</button></a>
+
+
+              <!-- Checks if the user can add to a list of interested in tickets -->
               <% if (!logged_in) {%>
-                <a href="<%= event.url %>" class="btn btn-primary"><button disabled>Add to List</button></a>
+                <a class="btn btn-primary"><button disabled>Add to List</button></a>
               <% } else { %>
-                <a href="<%= event.url %>" class="btn btn-primary"><button>Add to List</button></a>
+                <!-- Changed to pass value of the ticket so that it is properly added to the interested in -->
+                <a href="/interested/add" class="btn btn-primary"><button value="<%= event.ticket_id%>">Add to List</button></a>
               <% } %>  
             </div>
           </div>

@@ -64,7 +64,11 @@ const user = {
 //Login page
 //Loads the login page when the page is attempted to be accessed
 app.get("/login", (req, res) => {
-    res.render('pages/login');
+    if(req.session.user === undefined){
+        res.render('pages/login');
+    } else {
+        res.redirect('/home');
+    }
 });
 
 
@@ -129,6 +133,10 @@ app.get("/home", (req, res) => {
                         WHERE CURRENT_DATE BETWEEN date_trunc('month', CURRENT_DATE) AND (date_trunc('month', CURRENT_DATE) + interval '1 month - 1 second');`;
 
 
+    const sellingQuery = `SELECT * FROM tickets t
+                          INNER JOIN seller_to_tickets st ON t.ticket_id = st.ticket_id
+                          WHERE user_id = $1;`;
+
     var logged = false;
     console.log(req.session.user);
     if(req.session.user === undefined){
@@ -140,24 +148,28 @@ app.get("/home", (req, res) => {
     db.task('Homepage-contents', async (task) => {
         //Check if the user is logged in.
         var interested = [];
+        var selling = [];
         //If they aren't there is nothing to display for interested
         if(!logged){
             interested = [];
+            selling = [];
         } else {
             //If they are process the query
             interested = await task.any(interestedQuery, [req.session.user.id]);
+            selling = await task.any(sellingQuery, [req.session.user.id]);
         }
 
         const forSale = await task.any(forSaleQuery);
         const comingUp = await task.any(comingUpQuery);
         // Does the queries and will wait until all have been completed before proceeding
-        return {interested, forSale, comingUp};
+        return {interested, selling, forSale, comingUp};
     })
-    .then(({interested, forSale, comingUp}) => {
+    .then(({interested, selling, forSale, comingUp}) => {
         // Then render the home page with the results from the query.
         res.render("pages/home", {
             logged_in: logged,
             interested: interested,
+            selling: selling,
             tickets_for_sale: forSale,
             upcoming_events: comingUp,
         });
@@ -177,18 +189,19 @@ app.post('/interested/add', (req, res) => {
     const query = `INSERT INTO interested_in(user_id, ticket_id)
             VALUES($1, $2) RETURNING *;`;
 
-    db.query(query, [req.body.user.id, req.body.ticket_id])
+    //Changed to session as this is only accessed if the user is logged in
+    db.query(query, [req.session.user.id, req.body.ticket_id])
     .then(function(data){
         //Just returns to console/log that it was inserted
         res.status(201).json({
             status: 'success',
             data: data,
             message: 'New ticket interested in',
-        })
+        });
     })
     .catch(err => {
         //If it can't be inserted just render home
-        console.log(err.message)
+        console.log(err.message);
         res.render('/home');
     });
 });
@@ -227,12 +240,12 @@ app.post('/ticket/add', (req, res) =>{
 
     //Insert the ticket into the ticket table
     const insert = `INSERT INTO tickets (price, event_type, location, date, time)
-                   VALUES ($1, $2, $3, $4, $5) returning *;`;
+                   VALUES ($1, $2, $3, $4, $5) returning ticket_id;`;
     
     //Link the ticket to the user who added it.
     //TODO: ticket_id needs to be looked at
     const insertTicket = `INSERT INTO users_to_tickets (user_id, ticket_id)
-                VALUES((SELECT user_id FROM users WHERE $1 = username), (SELECT max(ticket_id) FROM tickets));`;
+                VALUES((SELECT user_id FROM users WHERE $1 = username), $2);`;
 
     db.query(insert, [
         req.body.price,
@@ -242,20 +255,20 @@ app.post('/ticket/add', (req, res) =>{
         req.body.time,
         user,
     ])
-    .then(
-        db.query(insertTicket, []) //Fill in what is passed in
+    .then( (ticket_id) =>{
+        db.query(insertTicket, [req.session.user.id, ticket_id])
         .then(
-            res.redirect('/page')
+            res.redirect('/home')
         )
         .catch((err) => {
-            res.render('page', {
+            res.render('/home', {
                 error: true,
                 message: err.message,
             })
         })
-    )
+    })
     .catch((err) => {
-        res.render('page', {
+        res.render('/home', {
             error: true,
             message: err.message,
         });
@@ -346,9 +359,71 @@ app.post("/ticket/delete", (req, res) => {
 });
 
 
+/**
+ *  Query for finding reviews for a specific user
+    const reviewsQuery = `SELECT * FROM reviews r
+                     INNER JOIN users_to_reviews ur ON r.review_id = ur.review_id
+                     WHERE user_id = $1;`;
+ */
+/**
+ * Used to add a review to a user. Need to implement a button that does so.
+ */
+app.post('/review/add', (req, res) => {
+    const query = `INSERT INTO reviews(date, rating, review)
+                   VALUES(NULL, $1, $2) RETURNING *;`;
+    db.query(query, [req.body.rating, req.body.review])
+    .then((data) => {
+        res.status(201).json({
+            status: 'success',
+            data: data,
+            message: 'New ticket interested in',
+        });
+    })
+    .catch((err) => {
+        console.log(err.message);
+    });
+});
 
 
-
+/**
+ * Removes a review from the database
+ * Currently unuseable
+ */
+app.delete('/review/delete', (req,res) => {
+    db.task("delete-review", (task) => {
+        return task.batch([
+            task.none(
+                `DELETE FROM
+                    reviews
+                WHERE
+                    review_id = $1;`,
+                    [req.params.review_id]
+            ),
+            task.none(
+                `DELETE FROM
+                    users_to_reviews
+                WHERE
+                    review_id = $1;`,
+                    [req.params.review_id]
+            ),
+            
+        ]);
+    })
+    .then(
+        (data) => {
+            res.status(200).json({
+                status: 'removed',
+                data: data,
+                message: 'Deleted successfully'
+            });
+    })
+    .catch((err) => {
+        res.redirect("/home", {
+            error: true,
+            message: err.message,
+        });
+    });
+});
 
 //Ticketmaster api call
 //TODO: add pages to load
