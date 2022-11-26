@@ -10,15 +10,16 @@
               <h5 class="cart-title">Price: $<%= event.price %></h5>
               <h5 class="cart-title">Location: <%= event.location %></h5>
               <h5 class="cart-title">Date: <%= event.date %></h5>
-              <a href="/userpage" class="btn btn-primary"><button>Book</button></a>
+              <a href="/userpage" class="btn btn-primary">Book</a>
 
 
               <!-- Checks if the user can add to a list of interested in tickets -->
               <% if (!logged_in) {%>
-                <a class="btn btn-primary"><button disabled>Add to List</button></a>
+                <a class="btn btn-primary">Add to List</a>
               <% } else { %>
                 <!-- Changed to pass value of the ticket so that it is properly added to the interested in -->
-                <a href="/interested/add" class="btn btn-primary"><button value="<%= event.ticket_id%>">Add to List</button></a>
+                <!-- <a href="/interested/add" class="btn btn-primary"><button value="<%= event.ticket_id%>">Add to List</button></a> -->
+                <input type="submit" class="btn btn-primary" value="<%- event.ticket_id %>" name="Add to List">
               <% } %>  
             </div>
           </div>

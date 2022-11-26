@@ -64,10 +64,17 @@ const user = {
 //Login page
 //Loads the login page when the page is attempted to be accessed
 app.get("/login", (req, res) => {
-    if(req.session.user === undefined){
-        res.render('pages/login');
+    // if(req.session.user === undefined){
+    //     res.render('pages/login');
+    // } else {
+    //     res.redirect('/home');
+    // }
+    if(req.session.user){
+        res.redirect('/');
     } else {
-        res.redirect('/home');
+        res.render('pages/login', {
+            logged_in: req.session.user
+        })
     }
 });
 
@@ -84,10 +91,10 @@ app.post("/login", async (req, res) => {
         //Then if a result is found check the password
         if(req.body.password === valid.password){
             //If they do match then store session data
-            user.logged_in = true;
-            user.username = username;
-            user.email = valid.email;
-            user.id = valid.user_id;
+            // user.logged_in = true;
+            // user.username = username;
+            // user.email = valid.email;
+            // user.id = valid.user_id;
 
             //Then save it as a session and go to the homepage
             req.session.user = user;
@@ -138,7 +145,7 @@ app.get("/home", (req, res) => {
                           WHERE user_id = $1;`;
 
     var logged = false;
-    console.log(req.session.user);
+    // console.log(req.session.user);
     if(req.session.user === undefined){
         logged = false;
     } else {
@@ -167,7 +174,7 @@ app.get("/home", (req, res) => {
     .then(({interested, selling, forSale, comingUp}) => {
         // Then render the home page with the results from the query.
         res.render("pages/home", {
-            logged_in: logged,
+            logged_in: req.session.user,
             interested: interested,
             selling: selling,
             tickets_for_sale: forSale,

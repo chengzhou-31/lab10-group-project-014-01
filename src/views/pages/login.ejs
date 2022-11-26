@@ -1,21 +1,45 @@
 <%- include ('../partials/header') %>
 <%- include ('../partials/navbar') %>
 <body class="body">
-    <main >
-        <div class="container">
+    <main>
         <!-- THE REST OF YOUR HTML CODE GOES HERE -->
+        <!-- <div class="container">
+
             <h1>Login</h1>
-            <form action="/login" method = "post">
+            <form action="/login" method="post">
                 <p>Enter Username</p>
-                    <input id="username" name="username">
+                <input id="username" name="username">
                 <p>Enter Password</p>
-                    <input id="password" name="password">
+                <input id="password" name="password">
                 <button type="submit" class="btn btn-primary">Login</button>
             </form>
         </div>
         <div class="container">
             <a href="../pages/register" class="btn btn-primary" tabindex="-1" role="button" >Or create an account.</a>
+        </div> -->
+
+        <div class="container" style="padding-top: 35px;">
+            <h1><b>Login</b></h1>
+            <form action="/login" method="POST">
+                <div class="form-group mb-3">
+                    <label for="username" style="color: white;">Username</label>
+                    <input type="username" class="form-control" name="username" id="username" aria-describedby="username" placeholder="Enter a username">
+                    <small id="emailHelp" class="form-text text-muted">We'll never share your email/username with anyone else.</small>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="password" style="color: white;">Password</label>
+                    <input type="password" class="form-control" name="password" id="password" placeholder="Enter a valid password">
+                </div>
+                <div class="row">
+                    <div class="col">
+                    <p>Don't have an account? <a href="/register">Register</a></p>
+                    </div>
+                    <div class="col" style="display: flex; justify-content: flex-end">
+                        <button type="submit" class="btn btn-primary" id="submit_button">Login</button>
+                    </div>
+                </div>
+            </form>
         </div>
     </main>
-</body>
+<!-- </body> -->
 <%- include ('../partials/footer') %>

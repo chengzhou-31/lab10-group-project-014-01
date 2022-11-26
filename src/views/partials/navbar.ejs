@@ -11,8 +11,11 @@
           <a id="link" class="nav-link active" aria-current="page" href="/home">Home</a>
           <a id="link" class="nav-link" href="/search">Search</a>
           <a id="link" class="nav-link" href="/profile">Profile</a>
-          <% if(user)%>
-          <a id="link" class="nav-link" href="/logout">Logout</a>
+          <% if(logged_in){ %> 
+            <a id="link" class="nav-link" href="/logout">Logout</a>
+          <% } else { %> 
+            <a id="link" class="nav-link" href="/login">Login</a>
+          <% } %> 
         </div>
       </div>
       <img src="../../resources/img/QuickTixLogo.jpg" alt="Logo">
