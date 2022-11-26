@@ -129,7 +129,7 @@ app.post("/login", async (req, res) => {
  */
 app.get("/home", (req, res) => {
     //List of tickets user is interested in
-    const interestedQuery = `SELECT * FROM tickets t
+    const interestedQuery = `SELECT DISTINCT * FROM tickets t
                         INNER JOIN interested_in i ON user_id = $1
                         WHERE t.ticket_id = i.ticket_id;`;
     
@@ -193,6 +193,10 @@ app.get("/home", (req, res) => {
 
 
 //If a user is interedted in a ticket it should be added to the DB
+//BUG: Users can click the button multiple times to keep adding same ticket
+//To their interested in
+//Temp solution: Made it so when pulling from the DB it only selects distinct
+//Should check if the insertion is unique and not repetitive
 app.post('/interested/add', (req, res) => {
     //Query to add the ticket.
     //Returns the data inserted
