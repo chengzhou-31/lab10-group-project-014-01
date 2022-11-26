@@ -1,0 +1,40 @@
+<%- include ('../partials/header') %>
+<%- include ('../partials/navbar') %>
+
+<body>
+    <div class="container">
+        <form action="/ticket/add" method="post">
+            <div class="mb-3">
+                <label for="Title" class="form-label">Event Title</label>
+                <input type="text" class="form-control" id="Title">
+            </div>
+            <div class="mb-3">
+                <label for="Price" class="form-label">Price</label>
+                <input type="number" class="form-control" id="Price">
+            </div>
+            <div class="mb-3">
+                <label for="Type" class="form-label">Event Type</label>
+                <input type="text" class="form-control" id="Type">
+            </div>
+            <div class="mb-3">
+                <label for="Location" class="form-label">Location</label>
+                <input type="text" class="form-control" id="Location">
+            </div>
+            <div class="mb-3">
+                <label for="Date" class="form-label">Date</label>
+                <input type="date" class="form-control" id="Date">
+            </div>
+            <div class="mb-3">
+                <label for="Time" class="form-label">Time (Optional)</label>
+                <input type="time" class="form-control" id="Time">
+            </div>
+            <div>
+                <button id="submit_button" class="btn btn-primary" type="submit"></button>
+            </div>
+        </form>
+
+    </div>
+</body>
+
+
+<%- include ('../partials/footer') %>
