@@ -60,6 +60,11 @@ const user = {
     id: undefined,
 };
 
+//The index page should just render the home page
+app.get("/", (req, res) => {
+    res.redirect("/home");
+});
+
 
 //Login page
 //Loads the login page when the page is attempted to be accessed
@@ -88,6 +93,9 @@ app.post("/login", async (req, res) => {
     //Do the database query
     db.one(query, [username])
     .then(async (valid) => {
+        // const match = await bcrypt.compare(req.body.password, password);
+        //Change if to if(match) when ready
+
         //Then if a result is found check the password
         if(req.body.password === valid.password){
             //If they do match then store session data
@@ -113,10 +121,6 @@ app.post("/login", async (req, res) => {
 
 
 
-//The index page should just render the home page
-app.get("/", (req, res) => {
-    res.redirect("/home");
-});
 
 
 //The home page should send a list of stuff to display.
@@ -205,11 +209,12 @@ app.post('/interested/add', (req, res) => {
             data: data,
             message: 'New ticket interested in',
         });
+        res.redirect('/home');
     })
     .catch(err => {
         //If it can't be inserted just render home
         console.log(err.message);
-        res.render('/home');
+        res.redirect('/home');
     });
 });
 
@@ -227,7 +232,8 @@ app.post('/interested/remove', (req, res) => {
             status: 'Removed successfuly',
             data: data,
             message: 'Removed',
-        })
+        });
+        res.redirect('/home');
     })
     .catch((err) => {
         //Error if could not be deleted
@@ -252,7 +258,7 @@ app.post('/ticket/add', (req, res) =>{
     //Link the ticket to the user who added it.
     //TODO: ticket_id needs to be looked at
     const insertTicket = `INSERT INTO users_to_tickets (user_id, ticket_id)
-                VALUES((SELECT user_id FROM users WHERE $1 = username), $2);`;
+                VALUES((SELECT user_id FROM users WHERE $1 = username), $2) RETURNING *;`;
 
     db.query(insert, [
         req.body.price,
@@ -264,9 +270,13 @@ app.post('/ticket/add', (req, res) =>{
     ])
     .then( (ticket_id) =>{
         db.query(insertTicket, [req.session.user.id, ticket_id])
-        .then(
+        .then( (data) =>{
+            res.status(201).json({
+                data: data,
+                message: 'Success',
+            });
             res.redirect('/home')
-        )
+        })
         .catch((err) => {
             res.render('/home', {
                 error: true,
@@ -281,6 +291,18 @@ app.post('/ticket/add', (req, res) =>{
         });
     });
 });
+
+
+app.get('/add', (req,res) => {
+    if(req.session.user === undefined){
+        res.redirect('/login');
+    } else {
+        res.render('/views/pages/add');
+    }
+});
+
+
+
 
 //Just a test case for above for postman
 app.post('/ticket/add/test', (req, res) =>{
@@ -334,6 +356,7 @@ app.post('/ticket/add/test', (req, res) =>{
 
 //Remove a ticket from the database
 app.post("/ticket/delete", (req, res) => {
+    ticket_id = req.params.ticket_id;
     db.task("delete-ticket", (task) => {
         return task.batch([
             task.none(
@@ -341,14 +364,14 @@ app.post("/ticket/delete", (req, res) => {
                     tickets
                 WHERE
                     ticket_id = $1;`,
-                    []              //List of params aka ticket id
+                    [ticket_id]              //List of params aka ticket id
             ),
             task.none(
                 `DELETE FROM
                     interested_in
                 WHERE
                     ticket_id = $1;`,
-                    []
+                    [ticket_id]
             ),
             
         ]);
@@ -436,6 +459,7 @@ app.delete('/review/delete', (req,res) => {
 //TODO: add pages to load
 //TODO: add results to pass
 //Should only be used when trying to find some tickets?
+//Maybe not used
 app.get('/ticketmaster', (req, res) => {
     axios({
         url: `https://app.ticketmaster.com/discovery/v2/events.json`,
@@ -468,7 +492,7 @@ app.get('/ticketmaster', (req, res) => {
 //When the user logs out. Should render a logout page, or notify the user that they logged out
 app.get("/logout", (req, res) => {
     req.session.destroy();
-    res.render("/home");
+    res.redirect("/home");
 });
 
 
