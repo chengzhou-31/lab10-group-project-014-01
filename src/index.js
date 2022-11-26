@@ -69,11 +69,6 @@ app.get("/", (req, res) => {
 //Login page
 //Loads the login page when the page is attempted to be accessed
 app.get("/login", (req, res) => {
-    // if(req.session.user === undefined){
-    //     res.render('pages/login');
-    // } else {
-    //     res.redirect('/home');
-    // }
     if(req.session.user){
         res.redirect('/');
     } else {
@@ -85,6 +80,7 @@ app.get("/login", (req, res) => {
 
 
 //When the user attempts to login, send a request to the database to check if the user is valid
+// Used when the user attempts to submit a login request
 app.post("/login", async (req, res) => {
     const username = req.body.username;
     //Get the user from the database given the username is correct.
@@ -99,10 +95,10 @@ app.post("/login", async (req, res) => {
         //Then if a result is found check the password
         if(req.body.password === valid.password){
             //If they do match then store session data
-            // user.logged_in = true;
-            // user.username = username;
-            // user.email = valid.email;
-            // user.id = valid.user_id;
+            user.logged_in = true;
+            user.username = username;
+            user.email = valid.email;
+            user.id = valid.user_id;
 
             //Then save it as a session and go to the homepage
             req.session.user = user;
@@ -129,21 +125,24 @@ app.post("/login", async (req, res) => {
  * A list of tickets the user is interested in
  * A list of tickets that are for sale
  * A list of tickets for shows/games that are coming up soon
+ * Added list of tickets that the user is selling if any
  */
 app.get("/home", (req, res) => {
-    //Need to test
-    //Might return an error if not logged in?
+    //List of tickets user is interested in
     const interestedQuery = `SELECT * FROM tickets t
                         INNER JOIN interested_in i ON user_id = $1
                         WHERE t.ticket_id = i.ticket_id;`;
+    
+    //List of tickets that are for sale. Lists the first 10 tickets
     const forSaleQuery = `SELECT * FROM tickets LIMIT 10;`;
 
 
     //Finds if the current date is between the current month and next month?
+    //Need more test cases for when the date is outside 1 month from now
     const comingUpQuery = `SELECT * FROM tickets 
                         WHERE CURRENT_DATE BETWEEN date_trunc('month', CURRENT_DATE) AND (date_trunc('month', CURRENT_DATE) + interval '1 month - 1 second');`;
 
-
+    //List of tickets the user is selling
     const sellingQuery = `SELECT * FROM tickets t
                           INNER JOIN seller_to_tickets st ON t.ticket_id = st.ticket_id
                           WHERE user_id = $1;`;
@@ -169,7 +168,7 @@ app.get("/home", (req, res) => {
             interested = await task.any(interestedQuery, [req.session.user.id]);
             selling = await task.any(sellingQuery, [req.session.user.id]);
         }
-
+        //Other queries that should always be processed
         const forSale = await task.any(forSaleQuery);
         const comingUp = await task.any(comingUpQuery);
         // Does the queries and will wait until all have been completed before proceeding
@@ -178,7 +177,7 @@ app.get("/home", (req, res) => {
     .then(({interested, selling, forSale, comingUp}) => {
         // Then render the home page with the results from the query.
         res.render("pages/home", {
-            logged_in: req.session.user,
+            logged_in: logged,
             interested: interested,
             selling: selling,
             tickets_for_sale: forSale,
@@ -204,11 +203,11 @@ app.post('/interested/add', (req, res) => {
     db.query(query, [req.session.user.id, req.body.ticket_id])
     .then(function(data){
         //Just returns to console/log that it was inserted
-        res.status(201).json({
-            status: 'success',
-            data: data,
-            message: 'New ticket interested in',
-        });
+        // res.status(201).json({
+        //     status: 'success',
+        //     data: data,
+        //     message: 'New ticket interested in',
+        // });
         res.redirect('/home');
     })
     .catch(err => {
