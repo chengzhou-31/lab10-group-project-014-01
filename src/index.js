@@ -295,10 +295,6 @@ app.post("/ticket/delete", (req, res) => {
 });
 
 
-
-
-
-
 //Ticketmaster api call
 //TODO: add pages to load
 //TODO: add results to pass
@@ -331,15 +327,11 @@ app.get('/ticketmaster', (req, res) => {
 });
 
 
-
 //When the user logs out. Should render a logout page, or notify the user that they logged out
 app.get("/logout", (req, res) => {
     req.session.destroy();
     res.render("pages/logout");
 });
-
-
-
 
 
 // make sure that the server is listening for client requests (listening on port 3000)
@@ -389,69 +381,3 @@ app.get('/search', (req, res) => {
         });
     });
 });
-
-// app.get('/search_results', (req, res) => {
-//     const re = new RegExp(req.body.searchInput, )
-//     var query = `SELECT * FROM tickets`;
-//     var count = 0;
-
-//     if (req.body.event_type){
-//         query = query + `WHERE event_type = '${req.body.event_type}'`;
-//         count = 1;
-//     }
-    
-//     if (req.body.location){
-//         if (count){
-//             query = query + `AND location = '${req.body.location}'`;
-//         }
-//         else {
-//             query = query + `WHERE location = '${req.body.location}'`;
-//             count = 1;
-//         }
-//     }
-
-//     if (req.body.price){
-//         if (count){
-//             query = query + `AND price <= '${req.body.price}'`;
-//         }
-//         else {
-//             query = query + `WHERE price <= '${req.body.price}'`;
-//             count = 1;
-//         }
-//     }
-    
-//     if (req.body.date){
-//         if (count){
-//             query = query + `AND date = '${req.body.date}'`;
-//         }
-//         else {
-//             query = query + `WHERE date = '${req.body.date}'`;
-//             count = 1;
-//         }
-//     }
-
-//     if (req.body.time){
-//         if (count){
-//             query = query + `AND time = '${req.body.time}'`;
-//         }
-//         else {
-//             query = query + `WHERE time = '${req.body.time}'`;
-//             count = 1;
-//         }
-//     }
-
-//     query = query + `AND tickets.event_type ~* $1 AND tickets.location ~* $1;`;
-//     const values = [re];
-
-//     db.one(query, values)
-//       .then((results) =>{
-//         res.render("pages/search_results", {results});
-//       })
-//       .catch((err) => {
-//         res.render("pages/search", {
-//             results: [],
-//             error: true,
-//             message: err.message,
-//         });
-//       });
-// });

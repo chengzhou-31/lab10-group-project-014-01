@@ -3,24 +3,26 @@
 
 <div class="container p-1 pt-5" id="search_container">
   <h2><b>Search Anything</b></h2>
-  <form action="/search" method="GET">
+  <!-- <form> -->
     <div class="input-group mb-3">
       <input type="text" class="form-control" id="search" aria-label="search">
-      <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">Filter by</button>
+      <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" id="filterBy">Search by: </button>
       <ul class="dropdown-menu dropdown-menu-end">
-        <li><a class="dropdown-item" href="">Event Type</a></li>
-        <li><a class="dropdown-item" href="">Location</a></li>
-        <li><a class="dropdown-item" href="">Date</a></li>
+        <li><a class="dropdown-item" id="none">--</a></li>
+        <li><a class="dropdown-item" id="event">Event Type</a></li>
+        <li><a class="dropdown-item" id="location">Location</a></li>
+        <li><a class="dropdown-item" id="date">Date</a></li>
+
         <li><hr class="dropdown-divider"></li>
         <li>
           <span class="dropdown-item-text">Price Range</span>
-          <div class="p-2">
-            <span class="dropdown-item-text" id="min">Min: </span>
-            <input type="range" class="form-range" min="0" max="500" step="0.5" id="minPrice">
+          <div class="input-group w-75 px-3">
+            <span class="input-group-text">Min:</span>
+            <input type="number" id="minPrice" class="form-control">
           </div>
-          <div class="p-2">
-            <span class="dropdown-item-text" id="max">Max: </span>
-            <input type="range" class="form-range" min="0" max="500" step="0.5" id="maxPrice">
+          <div class="input-group w-75 px-3">
+            <span class="input-group-text">Max:</span>
+            <input type="number" id="maxPrice" class="form-control">
           </div>
         </li>
       </ul>
@@ -28,83 +30,106 @@
     <% search_results.forEach(ticket => { %>
       <div class="card mb-3" id="ticket" hidden>
         <div class="card-body">
-          <h5 class="card-title"><b><%- ticket.name %> </b></h5>
-          <p class="card-subtitle mb-2 text-muted"><%- ticket.event_type %> </p>
-          <p class="card-text text-reset"><%- ticket.location %> </p>
+          <h5 class="card-title" id="ticket_name"><b><%- ticket.name %> </b></h5>
+          <p class="card-subtitle mb-2 text-muted" id="ticket_event"><%- ticket.event_type %> </p>
+          <p class="card-text text-reset" id="ticket_location"><%- ticket.location %> </p>
+          <p class="card-text text-reset" id="ticket_date"><%- ticket.date %> </p>
+          <p class="card-text text-success" id="ticket_price">$<%- ticket.price %> </p>
         </div>
       </div>
     <% }); %>  
-  </form>
+  <!-- </form> -->
 
   <script type="text/javascript">
+    // get search input
     const input = document.querySelector('#search');
     const container = document.querySelector('#search_container');
     const search_result = document.createElement('h1');
     const tickets = document.querySelectorAll('#ticket');
 
+    // price filter
+    let min;
+    let max;
     const maxPrice = document.querySelector('#maxPrice');
     const minPrice = document.querySelector('#minPrice');
     minPrice.addEventListener('input', e => {
-      const min = document.querySelector('#min').innerHTML = 'Min: ' + minPrice.value;
+      if(typeof(parseFloat(minPrice.value)) == 'number'){
+        min = minPrice.value;
+      } else {
+        min = undefined;
+      }
+      // console.log(min);
     });
     maxPrice.addEventListener('input', e => {
-      const max = document.querySelector('#max').innerHTML = 'Max: ' + maxPrice.value;
+      if(typeof(parseFloat(maxPrice.value)) == 'number'){
+        max = maxPrice.value;
+      } else {
+        max = undefined;
+      }
+      // console.log(max);
     });
 
-
+    // filters
+    const noneFilter = document.querySelector('#none');
+    const eventFilter = document.querySelector('#event');
+    const locationFilter = document.querySelector('#location');
+    const dateFilter = document.querySelector('#date');
+    let filter;
+    const filterBy = document.querySelector('#filterBy');
+    eventFilter.addEventListener('click', e => {
+      filter = eventFilter.innerHTML;
+      filterBy.innerHTML = 'Search by: ' + eventFilter.innerHTML;
+    });
+    locationFilter.addEventListener('click', e => {
+      filter = locationFilter.innerHTML;
+      filterBy.innerHTML = 'Search by: ' + locationFilter.innerHTML;
+    });
+    dateFilter.addEventListener('click', e => {
+      filter = dateFilter.innerHTML;
+      filterBy.innerHTML = 'Search by: ' + dateFilter.innerHTML;
+    });
+    noneFilter.addEventListener('click', e => {
+      filter = undefined;
+      filterBy.innerHTML = 'Search by: ';
+    });
+    
+    // implement search
     input.addEventListener('input', event => {
-      console.log(input.value);
       tickets.forEach(ticket => {
         let ticket_html = ticket.innerHTML.toLowerCase();
-        // let input_value = input.value.toLowerCase();
-        let input_value = input.value.toLowerCase().split(" ");
-        console.log(input_value);
-        // if(ticket_html.match(input_value)){
-        if(input_value.some(v => ticket_html.match(v))){
-          ticket.hidden = false;
+
+        if(filter){
+          switch(filter){
+            case 'Event Type': 
+              ticket_html = ticket.children[0].children[1].innerHTML.toLowerCase();
+              break;
+            case 'Location':
+              ticket_html = ticket.children[0].children[2].innerHTML.toLowerCase();
+              break;
+            case 'Date': 
+              ticket_html = ticket.children[0].children[3].innerHTML.toLowerCase();
+              break;
+          }
+        }
+
+        let input_value = input.value.toLowerCase();
+        let price = parseFloat(ticket.children[0].children[4].innerHTML.substring(1));
+        if(ticket_html.match(input_value)){
+          if(max && min && min < max){
+            if(price <= max && price >= min){
+              ticket.hidden = false;
+            } else {
+              ticket.hidden = true;
+            }
+          } else {
+            ticket.hidden = false;
+          }
         } else {
           ticket.hidden = true;
         }
-      })
+      });
     });
   </script>
 </div>
 
-
 <%- include ('../partials/footer') %>   
-
-<!-- <div class="form-group">
-  <label class="form-label" for="searchInput">Search Keyword</label>
-  <input type="text" class="form-control" id="searchInput" name="searchInput">
-</div>
-<div>
-  <h2>
-    Filters:
-  </h2>
-</div>
-<div class="form-row">
-  <div class="col-auto my-1">
-    <label class="mr-sm-2" for="event_type">Event Type</label>
-    <select class="custom-select mr-sm-2" id="event_type" name="event_type">
-      <option selected>Choose</option>
-      <option value="concert">Concert</option>
-      <option value="circus show">Circus Show</option>
-      <option value="Stand up comedy">Stand Up Comedy</option>
-      <option value="Football game">Football game</option>
-    </select>
-  </div>
-  <div class="col-auto my-1">
-    <label class="mr-sm-2" for="location">Location</label>
-    <select class="custom-select mr-sm-2" id="location" name="location">
-      <option selected>Choose</option>
-      <option value="my moms house">My Moms House</option>
-      <option value="Denver">Denver</option>
-      <option value="Boulder">Boulder</option>
-      <option value="CU stadium">CU Stadium</option>
-    </select>
-  </div>
-  <div class="col-auto my-1">
-    
-  </div>
-</div>
-<button type="submit" class="btn btn-primary">Search</button> -->
