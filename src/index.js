@@ -168,12 +168,6 @@ app.get("/home", (req, res) => {
 });
 
 
-
-
-
-
-
-
 //Adds a ticket to the database
 //TODO: Find what pages shouild be redirected to/rendered when complete or fails
 //TODO: Test it to make sure it kinda works,
