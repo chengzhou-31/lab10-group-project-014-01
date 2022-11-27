@@ -54,7 +54,6 @@ app.use(
 //Add more values
 //BUG: User undefined if not logged in?
 const user = {
-    logged_in: false,
     username: undefined,
     email: undefined,
     id: undefined,
@@ -74,7 +73,7 @@ app.get("/login", (req, res) => {
     } else {
         res.render('pages/login', {
             logged_in: req.session.user
-        })
+        });
     }
 });
 
@@ -95,7 +94,6 @@ app.post("/login", async (req, res) => {
         //Then if a result is found check the password
         if(req.body.password === valid.password){
             //If they do match then store session data
-            user.logged_in = true;
             user.username = username;
             user.email = valid.email;
             user.id = valid.user_id;
@@ -115,6 +113,15 @@ app.post("/login", async (req, res) => {
     });
 });
 
+app.get('/register', (req,res) => {
+    res.render('pages/register',{
+        logged_in: req.session.user,
+    });
+});
+
+app.post('/register', (req, res) => {
+
+});
 
 
 
@@ -131,39 +138,29 @@ app.get("/home", (req, res) => {
     //List of tickets user is interested in
     const interestedQuery = `SELECT DISTINCT * FROM tickets t
                         INNER JOIN interested_in i ON user_id = $1
-                        WHERE t.ticket_id = i.ticket_id;`;
+                        WHERE t.ticket_id = i.ticket_id LIMIT 5;`;
     
     //List of tickets that are for sale. Lists the first 10 tickets
-    const forSaleQuery = `SELECT * FROM tickets LIMIT 10;`;
+    const forSaleQuery = `SELECT * FROM tickets LIMIT 5;`;
 
 
     //Finds if the current date is between the current month and next month?
     //Need more test cases for when the date is outside 1 month from now
-    const comingUpQuery = `SELECT * FROM tickets 
-                        WHERE CURRENT_DATE BETWEEN date_trunc('month', CURRENT_DATE) AND (date_trunc('month', CURRENT_DATE) + interval '1 month - 1 second');`;
-
+    const comingUpQuery = `SELECT * FROM tickets
+                        WHERE (EXTRACT(MONTH FROM date) BETWEEN EXTRACT(MONTH FROM CURRENT_DATE) AND EXTRACT(MONTH FROM CURRENT_DATE)) 
+                        AND (EXTRACT(YEAR FROM date) = EXTRACT(YEAR FROM CURRENT_DATE)) LIMIT 5;`;
     //List of tickets the user is selling
     const sellingQuery = `SELECT * FROM tickets t
                           INNER JOIN seller_to_tickets st ON t.ticket_id = st.ticket_id
-                          WHERE user_id = $1;`;
+                          WHERE user_id = $1 LIMIT 5;`;
 
-    var logged = false;
-    // console.log(req.session.user);
-    if(req.session.user === undefined){
-        logged = false;
-    } else {
-        logged = true;
-    }
     // Do all of the queries
     db.task('Homepage-contents', async (task) => {
         //Check if the user is logged in.
         var interested = [];
         var selling = [];
         //If they aren't there is nothing to display for interested
-        if(!logged){
-            interested = [];
-            selling = [];
-        } else {
+        if(req.session.user){
             //If they are process the query
             interested = await task.any(interestedQuery, [req.session.user.id]);
             selling = await task.any(sellingQuery, [req.session.user.id]);
@@ -177,7 +174,7 @@ app.get("/home", (req, res) => {
     .then(({interested, selling, forSale, comingUp}) => {
         // Then render the home page with the results from the query.
         res.render("pages/home", {
-            logged_in: logged,
+            logged_in: req.session.user,
             interested: interested,
             selling: selling,
             tickets_for_sale: forSale,
@@ -245,50 +242,64 @@ app.post('/interested/remove', (req, res) => {
 });
 
 
+app.get('/add', (req,res) => {
+    if(req.session.user){
+        res.render('pages/add',{
+            logged_in: req.session.user,
+        });
+    } else {
+        res.redirect('/login');
+    }
+});
+
 
 //Adds a ticket to the database
-//TODO: Find what pages shouild be redirected to/rendered when complete or fails
-//TODO: Test it to make sure it kinda works,
-//TODO: Fill in the values that are passed to run the queries
 app.post('/ticket/add', (req, res) =>{
     //Grab the user who is adding a ticket
     const user = req.body.username;
-
+    var price = parseFloat(req.body.price);
+    var time = req.body.time;
+    if(time.length == 0){
+        time = null;
+    }
     //Insert the ticket into the ticket table
-    const insert = `INSERT INTO tickets (price, event_type, location, date, time)
-                   VALUES ($1, $2, $3, $4, $5) returning ticket_id;`;
+    const insert = `INSERT INTO tickets (name, price, event_type, location, date, time)
+                   VALUES ($1, $2, $3, $4, $5, $6) returning ticket_id;`;
     
     //Link the ticket to the user who added it.
     //TODO: ticket_id needs to be looked at
-    const insertTicket = `INSERT INTO users_to_tickets (user_id, ticket_id)
-                VALUES((SELECT user_id FROM users WHERE $1 = username), $2) RETURNING *;`;
+    const insertTicket = `INSERT INTO seller_to_tickets (user_id, ticket_id)
+                VALUES($1, $2) RETURNING *;`;
 
     db.query(insert, [
-        req.body.price,
+        req.body.title,
+        price,
         req.body.type,
         req.body.loc,
-        req.body.data,
-        req.body.time,
+        req.body.date,
+        time,
         user,
     ])
-    .then( (ticket_id) =>{
-        db.query(insertTicket, [req.session.user.id, ticket_id])
+    .then( (value) =>{
+        db.query(insertTicket, [req.session.user.id, value[0].ticket_id])
         .then( (data) =>{
-            res.status(201).json({
-                data: data,
-                message: 'Success',
-            });
+            // res.status(201).json({
+            //     data: data,
+            //     message: 'Success',
+            // });
             res.redirect('/home')
         })
         .catch((err) => {
-            res.render('/home', {
+            res.render('pages/home', {
+                logged_in: req.session.user,
                 error: true,
                 message: err.message,
             })
         })
     })
     .catch((err) => {
-        res.render('/home', {
+        res.render('pages/home', {
+            logged_in: req.session.user,
             error: true,
             message: err.message,
         });
@@ -296,13 +307,6 @@ app.post('/ticket/add', (req, res) =>{
 });
 
 
-app.get('/add', (req,res) => {
-    if(req.session.user === undefined){
-        res.redirect('/login');
-    } else {
-        res.render('/views/pages/add');
-    }
-});
 
 
 
@@ -512,7 +516,8 @@ app.get('/search', (req, res) => {
 
     db.any(query).then(data => {
         res.render('pages/search', {
-            search_results: data
+            search_results: data,
+            logged_in: req.session.user,
         });
     }).catch(error => {
         res.render("pages/register", {

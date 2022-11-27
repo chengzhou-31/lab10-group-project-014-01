@@ -22,9 +22,11 @@ CREATE TABLE tickets (
 DROP TABLE IF EXISTS reviews CASCADE;
 CREATE TABLE reviews (
     review_id SERIAL primary key,
+    user_id int FOREIGN KEY,
     date date,
     rating real,
-    review varchar(500)
+    review varchar(500),
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
 );
 
 -- Seller to tickets
