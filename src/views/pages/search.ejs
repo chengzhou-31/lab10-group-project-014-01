@@ -33,7 +33,10 @@
           <h5 class="card-title" id="ticket_name"><b><%- ticket.name %> </b></h5>
           <p class="card-subtitle mb-2 text-muted" id="ticket_event"><%- ticket.event_type %> </p>
           <p class="card-text text-reset" id="ticket_location"><%- ticket.location %> </p>
-          <p class="card-text text-reset" id="ticket_date"><%- ticket.date %> </p>
+          <% var dateString = ticket.date; %>
+          <% dateString = new Date(dateString).toUTCString(); %>
+          <% dateString = dateString.split(' ').slice(0, 4).join(' '); %>
+          <p class="card-text text-reset" id="ticket_date"><%- dateString %> </p>
           <p class="card-text text-success" id="ticket_price">$<%- ticket.price %> </p>
         </div>
       </div>
