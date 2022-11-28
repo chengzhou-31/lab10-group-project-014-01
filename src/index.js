@@ -71,7 +71,7 @@ app.get("/", (req, res) => {
 //Loads the login page when the page is attempted to be accessed
 app.get("/login", (req, res) => {
     if(req.session.user){
-        res.redirect('/');
+        res.redirect('/home');
     } else {
         res.render('pages/login', {
             logged_in: req.session.user
@@ -145,13 +145,9 @@ app.post("/login", async (req, res) => {
 });
 
 
-// app.get('/register', (req,res) => {
-//     res.render('pages/login',{
-//         logged_in: req.session.user,
-//     });
-// });
 
-
+//Register is added as modal not a page anymore
+//Inserts a new user into the database successfuly. 
 app.post('/register', async (req, res) => {
     const name = req.body.username;
     const email = req.body.email;
@@ -165,14 +161,14 @@ app.post('/register', async (req, res) => {
     const query = `INSERT INTO users (username, password, email, name, phone)
                 VALUES ($1, $2, $3, $4, $5);`;
 
-    db.one(query, [username, hash, email, name, phone]).then(() => {
-        console.log("Database processed correctly");
-        res.redirect('/login');
-    }).catch(error => {
+    db.one(query, [username, hash, email, name, phone]).then(
+        res.redirect('/login')
+    ).catch(error => {
         res.render("pages/login", {
             logged_in: req.session.user,
             error: true,
             message: error.message,
+            logged_in: req.session.user
         });
     });
 });
@@ -293,13 +289,9 @@ app.post('/interested/remove', (req, res) => {
 
 
 app.get('/add', (req,res) => {
-    if(req.session.user){
-        res.render('pages/add',{
-            logged_in: req.session.user,
-        });
-    } else {
-        res.redirect('/login');
-    }
+    res.render('pages/add',{
+        logged_in: req.session.user,
+    });
 });
 
 
