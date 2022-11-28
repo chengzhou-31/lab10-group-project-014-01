@@ -169,7 +169,7 @@ app.get("/home", (req, res) => {
     //Finds if the current date is between the current month and next month?
     //Need more test cases for when the date is outside 1 month from now
     const comingUpQuery = `SELECT * FROM tickets
-                        WHERE (EXTRACT(MONTH FROM date) BETWEEN EXTRACT(MONTH FROM CURRENT_DATE) AND EXTRACT(MONTH FROM CURRENT_DATE)) 
+                        WHERE (EXTRACT(MONTH FROM date) BETWEEN EXTRACT(MONTH FROM CURRENT_DATE) AND EXTRACT(MONTH FROM CURRENT_DATE) + 1) 
                         AND (EXTRACT(YEAR FROM date) = EXTRACT(YEAR FROM CURRENT_DATE)) LIMIT 5;`;
     //List of tickets the user is selling
     const sellingQuery = `SELECT * FROM tickets t
@@ -190,6 +190,7 @@ app.get("/home", (req, res) => {
         //Other queries that should always be processed
         const forSale = await task.any(forSaleQuery);
         const comingUp = await task.any(comingUpQuery);
+        console.log(comingUp);
         // Does the queries and will wait until all have been completed before proceeding
         return {interested, selling, forSale, comingUp};
     })
@@ -323,54 +324,6 @@ app.post('/ticket/add', (req, res) =>{
 });
 
 
-//Just a test case for above for postman
-app.post('/ticket/add/test', (req, res) =>{
-    //Grab the user who is adding a ticket
-    const user = req.body.username;
-
-    //Insert the ticket into the ticket table
-    const insert = `INSERT INTO tickets (price, event_type, location, date, time)
-                   VALUES ($1, $2, $3, $4, $5) returning *;`;
-    
-    //Link the ticket to the user who added it.
-    //TODO: ticket_id needs to be looked at
-    const insertTicket = `INSERT INTO users_to_tickets (user_id, ticket_id)
-                VALUES((SELECT user_id FROM users WHERE $1 = username), (SELECT max(ticket_id) FROM tickets));`;
-
-    db.query(insert, [
-        req.body.price,
-        req.body.type,
-        req.body.loc,
-        req.body.data,
-        req.body.time,
-        user,
-    
-    ]) //Fill in what is passed in
-    .then(
-        function(data) {
-            res.status(201).json({
-                status: 'Adeed',
-                data: data,
-                message: 'added yes',
-            })
-        }
-        //db.query(insertTicket, [user]) //Fill in what is passed in
-        //.then(function (data) { 
-        // }
-        )
-        .catch((err) => {
-            res.render('page', {
-                error: true,
-                message: err.message,
-            })
-        })
-    .catch((err) => {
-        res.render('page', {
-            error: true,
-            message: err.message,
-        });
-    });
-});
 
 
 //Remove a ticket from the database
@@ -378,6 +331,7 @@ app.post("/ticket/delete", (req, res) => {
     ticket_id = req.params.ticket_id;
     db.task("delete-ticket", (task) => {
         return task.batch([
+            //Delete from tickets
             task.none(
                 `DELETE FROM
                     tickets
@@ -385,9 +339,18 @@ app.post("/ticket/delete", (req, res) => {
                     ticket_id = $1;`,
                     [ticket_id]              //List of params aka ticket id
             ),
+            //Delete from interested in tickets
             task.none(
                 `DELETE FROM
                     interested_in
+                WHERE
+                    ticket_id = $1;`,
+                    [ticket_id]
+            ),
+            //Delete from the seller
+            task.none(
+                `DELETE FROM
+                    seller_to_tickets
                 WHERE
                     ticket_id = $1;`,
                     [ticket_id]
@@ -399,8 +362,7 @@ app.post("/ticket/delete", (req, res) => {
         //What do to after the ticket has been removed, if it was removed
     )
     .catch((err) => {
-        res.render("/userpage", {
-            courses: [],
+        res.render("/home", {
             error: true,
             message: err.message,
         });

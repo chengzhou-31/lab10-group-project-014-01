@@ -14,8 +14,8 @@ CREATE TABLE tickets (
     name varchar(100) not null,
     price real not null,
     event_type varchar(50),
-    location varchar(50),
-    date date,
+    location varchar(50) NOT NULL,
+    date date NOT NULL,
     time time
 );
 
