@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS users CASCADE;
 CREATE TABLE users (
     user_id SERIAL primary key,
     username varchar(50) not null,
-    password varchar(50) not null,
+    password varchar(100) not null,
     email varchar(50) not null,
     name varchar(50) not null,
     phone varchar(11)
@@ -22,11 +22,11 @@ CREATE TABLE tickets (
 DROP TABLE IF EXISTS reviews CASCADE;
 CREATE TABLE reviews (
     review_id SERIAL primary key,
-    user_id int FOREIGN KEY,
+    user_id int,
     date date,
     rating real,
     review varchar(500),
-    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
 -- Seller to tickets
