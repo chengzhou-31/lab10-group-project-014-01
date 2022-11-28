@@ -133,15 +133,15 @@ app.post('/register', async (req, res) => {
     }
     console.log(req.body.password);
     const hash = await bcrypt.hash(req.body.password, 10);
-    const query = `INSERT INTO users (username, password, email, name, phone) VALUES ($1, $2, $3, $4, $5);`;
+    const query = `INSERT INTO users (username, password, email, name, phone)
+                VALUES ($1, $2, $3, $4, $5);`;
 
     db.one(query, [username, hash, email, name, phone]).then(data => {
         console.log("Database processed correctly");
-        res.render('pages/login', {
-            logged_in: req.session.user,
-        });
+        res.redirect('/login');
     }).catch(error => {
         res.render("pages/login", {
+            logged_in: req.session.user,
             error: true,
             message: error.message,
             logged_in: req.session.user
