@@ -1,3 +1,4 @@
+// import libraries
 const express = require('express');
 const app = express();
 const pgp = require('pg-promise')();
@@ -59,6 +60,7 @@ const user = {
     id: undefined,
 };
 
+
 //The index page should just render the home page
 app.get("/", (req, res) => {
     res.redirect("/home");
@@ -113,17 +115,35 @@ app.post("/login", async (req, res) => {
     });
 });
 
-app.get('/register', (req,res) => {
-    res.render('pages/register',{
-        logged_in: req.session.user,
+
+// app.get('/register', (req,res) => {
+//     res.render('pages/login',{
+//         logged_in: req.session.user,
+//     });
+// });
+
+
+app.post('/register', async (req, res) => {
+    const name = req.body.username;
+    const email = req.body.email;
+    const username = req.body.username;
+    const phone = req.body.phone;
+    if(req.body.password != req.body.passwordConf){
+        throw new Error('Password does not match');
+    }
+    console.log(req.body.password);
+    const hash = await bcrypt.hash(req.body.password, 10);
+    const query = `INSERT INTO users (username, password, email, name, phone) VALUES ($1, $2, $3, $4, $5);`;
+
+    db.any(query, [username, hash, email, name, phone]).then(data => {
+        res.redirect('pages/login');
+    }).catch(error => {
+        res.render("pages/login", {
+            error: true,
+            message: error.message,
+        });
     });
 });
-
-app.post('/register', (req, res) => {
-
-});
-
-
 
 
 //The home page should send a list of stuff to display.
@@ -188,7 +208,6 @@ app.get("/home", (req, res) => {
 });
 
 
-
 //If a user is interedted in a ticket it should be added to the DB
 //BUG: Users can click the button multiple times to keep adding same ticket
 //To their interested in
@@ -217,7 +236,6 @@ app.post('/interested/add', (req, res) => {
         res.redirect('/home');
     });
 });
-
 
 
 //In the case the user is no longer interested in the ticket
@@ -305,10 +323,6 @@ app.post('/ticket/add', (req, res) =>{
         });
     });
 });
-
-
-
-
 
 
 //Just a test case for above for postman
@@ -462,6 +476,7 @@ app.delete('/review/delete', (req,res) => {
     });
 });
 
+
 //Ticketmaster api call
 //TODO: add pages to load
 //TODO: add results to pass
@@ -495,15 +510,11 @@ app.get('/ticketmaster', (req, res) => {
 });
 
 
-
 //When the user logs out. Should render a logout page, or notify the user that they logged out
 app.get("/logout", (req, res) => {
     req.session.destroy();
     res.redirect("/home");
 });
-
-
-
 
 
 // make sure that the server is listening for client requests (listening on port 3000)
