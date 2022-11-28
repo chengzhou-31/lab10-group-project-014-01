@@ -1,7 +1,26 @@
 <%- include ('../partials/header') %>
 <%- include ('../partials/navbar') %>
 
-
+<body>
+    <div class="container">
+        <h2><%= username%></h2>
+        <hr>
+        <div class="conatiner">
+            <h5>Tickets <%= username%> selling</h5>
+        </div>
+        <div class="container">
+            <h5>Reivews</h5>
+            <%=object = reviews%>
+            <%- include ('../partials/Cards') %>
+        </div>
+        <div class="container">
+            <div class="card-deck">
+                <% reviews.forEach(review => { %>
+                    <%- include ('../partials/review')%>
+                <%});%>
+            </div>
+        </div>
+    </div>
 
 
 

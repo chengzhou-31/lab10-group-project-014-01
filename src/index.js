@@ -57,6 +57,7 @@ app.use(
 const user = {
     username: undefined,
     email: undefined,
+    phone: undefined,
     id: undefined,
 };
 
@@ -120,13 +121,15 @@ app.post("/login", async (req, res) => {
                 const user = {
                     username: username,
                     email: data[0].email,
-                    id: data[0].id
+                    phone: data[0].phone,
+                    id: data[0].user_id
                 }
-
+                await console.log(user.email);
                 // req.session.user = {
                 //     api_key: process.env.API_KEY,
                 // };
                 req.session.user = user;
+                await console.log(req.session.user.id);
                 req.session.save();
                 res.redirect('/home');
             } else {
@@ -394,6 +397,42 @@ app.post("/ticket/delete", (req, res) => {
         });
     });
 });
+
+
+
+app.get('/userpage', (req, res) => {
+    const getReviews = `SELECT * FROM reviews WHERE user_id = $1;`;
+
+    const getSales = `SELECT * FROM tickets t
+    INNER JOIN seller_to_tickets st ON t.ticket_id = st.ticket_id
+    WHERE user_id = $1 LIMIT 5;`;
+
+    db.task('userpage-contents', async (data) => {
+        var reviews = await task.any(getReviews, [req.session.user.id]);
+        var selling = await task.any(getSales, [req.session.user.id]);
+        return{reviews, selling};
+    })
+    .then(({reviews, selling}) => {
+        res.render('/userpage', {
+            logged_in: req.session.user,
+            selling: selling,
+            reviews: reviews,
+            username: req.session.username,
+            phone: req.session.user.phone,
+            email: req.session.user.email,
+        });
+    })
+    .catch((err) => {
+        res.render('pages/userpage', {
+            error: true,
+            message: err.message,
+            logged_in: req.session.user,
+        })
+    })
+});
+
+
+
 
 
 /**
