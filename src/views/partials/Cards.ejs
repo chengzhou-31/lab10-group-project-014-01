@@ -1,0 +1,36 @@
+<div class="card-deck">
+    <% object.forEach(event => { %>
+        <div class="card text-white bg-dark mb-3" style="border: 2px solid goldenrod">
+            <!-- <img class="card-img-top" src="..." alt="Card image cap"> -->  
+            <div class="card-body">
+
+              <!-- Basic info about the ticket -->
+              <h5 class="card-title">Event Title: <%= event.name %></h5>
+              <h5 class="cart-title">Price: $<%= event.price %></h5>
+              <h5 class="cart-title">Location: <%= event.location %></h5>
+              <% var dateString = event.date; %>
+              <% dateString = new Date(dateString).toUTCString(); %>
+              <% dateString = dateString.split(' ').slice(0, 4).join(' '); %>
+              <!-- <% console.log(dateString); %> -->
+              <h5 class="cart-title">Date: <%= dateString %></h5>
+              <div style="display:flex; flex-direction:row; column-gap: 10px;">
+                <!-- Should redirect to the userpage. Unknown link atm -->
+                <form action="/userpage" method="GET">
+                  <!-- Ticket_id used to traceback to the seller when trying to access the page -->
+                  <button class="btn btn-primary" type="submit" value="<%= event.ticket_id%>">Book</button>
+                </form>
+
+                <!-- Checks if the user can add to a list of interested in tickets -->
+                <% if (!logged_in) {%>
+                  <button class="btn btn-primary" disabled>Add to List</button>
+                <% } else { %>
+                  <!-- Changed to pass value of the ticket so that it is properly added to the interested in -->
+                  <form action="/interested/add" method="POST">
+                    <button type="submit" class="btn btn-primary" value="<%= event.ticket_id %>" name="ticket_id">Add to list</button>
+                  </form>
+                <% } %>  
+              </div>
+            </div>
+          </div>
+    <% }); %>
+  </div>

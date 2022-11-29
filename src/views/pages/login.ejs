@@ -1,21 +1,102 @@
 <%- include ('../partials/header') %>
 <%- include ('../partials/navbar') %>
 <body class="body">
-    <main >
-        <div class="container">
+    <main>
         <!-- THE REST OF YOUR HTML CODE GOES HERE -->
+        <!-- <div class="container">
             <h1>Login</h1>
-            <form action="/login" method = "post">
+            <form action="/login" method="post">
                 <p>Enter Username</p>
-                    <input id="username" name="username">
+                <input id="username" name="username">
                 <p>Enter Password</p>
-                    <input id="password" name="password">
+                <input id="password" name="password">
                 <button type="submit" class="btn btn-primary">Login</button>
             </form>
         </div>
         <div class="container">
             <a href="../pages/register" class="btn btn-primary" tabindex="-1" role="button" >Or create an account.</a>
+        </div> -->
+
+        <div class="modal fade" tabindex="-1" id="event-modal">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h3 class="modal-title"><b>Register</b></h3>
+                  <button type="button" class="btn-close btn" data-bs-dismiss="modal" aria-label="Close">Close</button>
+                </div>
+                <div class="modal-body">
+                    <form id="event-modal form" action="/register" method="POST" autocomplete="off">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="name" name="name" placeholder="John Doe" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email address</label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required>
+                            <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="username" name="username" placeholder="abcd1234" required>
+                            <small id="userHelp" class="form-text text-muted">No special characters. Max 8 characters.</small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="phone" name="phone" pattern="[0-9]{10}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                            <small id="userHelp" class="form-text text-muted">Min 8 characters, must have numbers and at least 1 special character.</small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="passwordConf" class="form-label">Confirm Password</label>
+                            <input type="password" class="form-control" id="passwordConf" name="passwordConf" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="submit_button">Submit</button>
+                    </form>
+                </div>
+              </div>
+            </div>
+        </div>  
+
+        <script>
+            function showRegister(){
+                let EVENT_MODAL = new bootstrap.Modal(document.getElementById('event-modal'));
+                EVENT_MODAL.show();
+            }
+        </script>
+
+        <div class="container" style="padding-top: 35px;">
+            <h1><b>Login</b></h1>
+            <form action="/login" method="POST">
+                <div class="form-group mb-3">
+                    <label for="username" style="color: white;">Username</label>
+                    <input type="username" class="form-control" name="username" id="username" aria-describedby="username" placeholder="Enter a username">
+                    <small id="emailHelp" class="form-text text-muted">We'll never share your email/username with anyone else.</small>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="password" style="color: white;">Password</label>
+                    <input type="password" class="form-control" name="password" id="password" placeholder="Enter a valid password">
+                </div>
+                <div class="row">
+                    <div class="col">
+                    <p>Don't have an account? <a onclick="showRegister()">Register</a></p>
+                    </div>
+                    <div class="col" style="display: flex; justify-content: flex-end">
+                        <button type="submit" class="btn btn-primary" id="submit_button">Login</button>
+                    </div>
+                </div>
+            </form>
         </div>
+        <% if (locals.message) { %>
+            <div
+              class="alert alert-<%- locals.error ? 'danger' : 'success' %>"
+              role="alert"
+            >
+            <%= message %>
+            </div>
+        <% } %>
     </main>
-</body>
+<!-- </body> -->
 <%- include ('../partials/footer') %>

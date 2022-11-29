@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS users CASCADE;
 CREATE TABLE users (
     user_id SERIAL primary key,
     username varchar(50) not null,
-    password varchar(50) not null,
+    password varchar(100) not null,
     email varchar(50) not null,
     name varchar(50) not null,
     phone varchar(11)
@@ -14,17 +14,19 @@ CREATE TABLE tickets (
     name varchar(100) not null,
     price real not null,
     event_type varchar(50),
-    location varchar(50),
-    date date,
+    location varchar(50) NOT NULL,
+    date date NOT NULL,
     time time
 );
 
 DROP TABLE IF EXISTS reviews CASCADE;
 CREATE TABLE reviews (
     review_id SERIAL primary key,
+    user_id int,
     date date,
     rating real,
-    review varchar(500)
+    review varchar(500),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
 -- Seller to tickets
@@ -37,6 +39,7 @@ CREATE TABLE seller_to_tickets (
 );
 
 -- Buyer to tickets
+-- Not used?
 DROP TABLE IF EXISTS buyer_to_tickets CASCADE;
 CREATE TABLE buyer_to_tickets (
     user_id int,
@@ -55,7 +58,8 @@ CREATE TABLE users_to_reviews (
 );
 
 -- Lists the tickets that a user is interested in
-DROP TABLE IF EXISTS interested_in (
+DROP TABLE IF EXISTS interested_in CASCADE;
+CREATE TABLE interested_in(
     user_id int NOT NULL,
     ticket_id int NOT NULL,
     FOREIGN KEY (ticket_id) REFERENCES tickets(ticket_id),
