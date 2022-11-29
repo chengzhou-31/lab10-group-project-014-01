@@ -11,9 +11,14 @@
     </p>    
 
     <!-- Displays tickets for events happening soon -->
-    <h1>Upcoming Events:</h1>
-    <% object = upcoming_events %>
-    <%- include ('../partials/Cards') %>
+    <div class="container-fluid py-2">
+      <h1>Upcoming Events:</h1>
+      <div class="scrolling-wrapper row flex-row flex-nowrap" style="overflow-x: auto;">
+        <% object = upcoming_events %>
+        <%- include ('../partials/Cards') %>
+      </div>
+      
+    </div>
 
     <!-- Displays tickets for any events -->
     <h1>All tickets:</h1>

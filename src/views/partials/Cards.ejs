@@ -1,6 +1,6 @@
 <div class="card-deck">
     <% object.forEach(event => { %>
-        <div class="card text-white bg-dark mb-3" style="border: 2px solid goldenrod">
+        <div class="card text-white bg-dark mb-3 w-auto" style="border: 2px solid goldenrod; max-width: 30%;">
             <!-- <img class="card-img-top" src="..." alt="Card image cap"> -->  
             <div class="card-body">
 
@@ -11,7 +11,6 @@
               <% var dateString = event.date; %>
               <% dateString = new Date(dateString).toUTCString(); %>
               <% dateString = dateString.split(' ').slice(0, 4).join(' '); %>
-              <!-- <% console.log(dateString); %> -->
               <h5 class="cart-title">Date: <%= dateString %></h5>
               <div style="display:flex; flex-direction:row; column-gap: 10px;">
                 <!-- Should redirect to the userpage. Unknown link atm -->

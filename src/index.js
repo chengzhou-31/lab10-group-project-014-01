@@ -124,12 +124,10 @@ app.post("/login", async (req, res) => {
                     phone: data[0].phone,
                     id: data[0].user_id
                 }
-                await console.log(user.email);
                 // req.session.user = {
                 //     api_key: process.env.API_KEY,
                 // };
                 req.session.user = user;
-                await console.log(req.session.user.id);
                 req.session.save();
                 res.redirect('/home');
             } else {
@@ -159,7 +157,7 @@ app.post('/register', async (req, res) => {
     if(req.body.password != req.body.passwordConf){
         throw new Error('Password does not match');
     }
-    console.log(req.body.password);
+    // console.log(req.body.password);
     const hash = await bcrypt.hash(req.body.password, 10);
     const query = `INSERT INTO users (username, password, email, name, phone)
                 VALUES ($1, $2, $3, $4, $5);`;
@@ -199,7 +197,8 @@ app.get("/home", (req, res) => {
     //Need more test cases for when the date is outside 1 month from now
     const comingUpQuery = `SELECT * FROM tickets
                         WHERE (EXTRACT(MONTH FROM date) BETWEEN EXTRACT(MONTH FROM CURRENT_DATE) AND EXTRACT(MONTH FROM CURRENT_DATE) + 1) 
-                        AND (EXTRACT(YEAR FROM date) = EXTRACT(YEAR FROM CURRENT_DATE)) LIMIT 5;`;
+                        AND (EXTRACT(YEAR FROM date) = EXTRACT(YEAR FROM CURRENT_DATE)) 
+                        ORDER BY date LIMIT 5;`;
     //List of tickets the user is selling
     const sellingQuery = `SELECT * FROM tickets t
                           INNER JOIN seller_to_tickets st ON t.ticket_id = st.ticket_id
@@ -219,7 +218,7 @@ app.get("/home", (req, res) => {
         //Other queries that should always be processed
         const forSale = await task.any(forSaleQuery);
         const comingUp = await task.any(comingUpQuery);
-        console.log(comingUp);
+        // console.log(comingUp);
         // Does the queries and will wait until all have been completed before proceeding
         return {interested, selling, forSale, comingUp};
     })
@@ -400,30 +399,32 @@ app.post("/ticket/delete", (req, res) => {
 
 
 
-app.get('/userpage', (req, res) => {
+app.get('/profile', (req, res) => {
     const getReviews = `SELECT * FROM reviews WHERE user_id = $1;`;
 
     const getSales = `SELECT * FROM tickets t
     INNER JOIN seller_to_tickets st ON t.ticket_id = st.ticket_id
     WHERE user_id = $1 LIMIT 5;`;
 
-    db.task('userpage-contents', async (data) => {
+    db.task('profile-contents', async (task) => {
         var reviews = await task.any(getReviews, [req.session.user.id]);
         var selling = await task.any(getSales, [req.session.user.id]);
         return{reviews, selling};
     })
     .then(({reviews, selling}) => {
-        res.render('/userpage', {
+        res.render('pages/profile', {
             logged_in: req.session.user,
             selling: selling,
             reviews: reviews,
-            username: req.session.username,
+            username: req.session.user.username,
             phone: req.session.user.phone,
             email: req.session.user.email,
         });
     })
     .catch((err) => {
-        res.render('pages/userpage', {
+        console.log(err.message);
+        res.redirect('/home');
+        res.render('pages/', {
             error: true,
             message: err.message,
             logged_in: req.session.user,

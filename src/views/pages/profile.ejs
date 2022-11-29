@@ -1,0 +1,33 @@
+<%- include ('../partials/header') %>
+<%- include ('../partials/navbar') %>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-2">
+                <h2><%= username%></h2>
+                <hr>
+                
+            </div>
+            <div class="col-9">
+                <div class="conatiner" style="width:auto;">
+                    <h5>Tickets <%= username%> selling</h5>
+                    <% object = selling%>
+                    <%- include ('../partials/Cards') %>
+                </div>
+            
+                <h5>Reivews</h5>
+                <div class="container">
+                    <div class="card-deck">
+                        <% reviews.forEach(review => { %>
+                            <%- include ('../partials/review')%>
+                        <%});%>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+<%- include ('../partials/footer') %>
