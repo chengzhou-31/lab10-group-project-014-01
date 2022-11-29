@@ -187,17 +187,20 @@ app.get("/home", (req, res) => {
     //List of tickets user is interested in
     const interestedQuery = `SELECT DISTINCT * FROM tickets t
                         INNER JOIN interested_in i ON user_id = $1
+                        INNER JOIN seller_to_tickets st ON st.ticket_id = t.ticket_id
                         WHERE t.ticket_id = i.ticket_id LIMIT 5;`;
     
     //List of tickets that are for sale. Lists the first 10 tickets
-    const forSaleQuery = `SELECT * FROM tickets LIMIT 5;`;
+    const forSaleQuery = `SELECT * FROM tickets t
+                            INNER JOIN seller_to_tickets st ON st.ticket_id = t.ticket_id;`;
 
 
     //Finds if the current date is between the current month and next month?
     //Need more test cases for when the date is outside 1 month from now
-    const comingUpQuery = `SELECT * FROM tickets
+    const comingUpQuery = `SELECT * FROM tickets t
+                        INNER JOIN seller_to_tickets st ON st.ticket_id = t.ticket_id
                         WHERE (EXTRACT(MONTH FROM date) BETWEEN EXTRACT(MONTH FROM CURRENT_DATE) AND EXTRACT(MONTH FROM CURRENT_DATE) + 1) 
-                        AND (EXTRACT(YEAR FROM date) = EXTRACT(YEAR FROM CURRENT_DATE)) 
+                        AND (EXTRACT(YEAR FROM date) = EXTRACT(YEAR FROM CURRENT_DATE))
                         ORDER BY date LIMIT 5;`;
     //List of tickets the user is selling
     const sellingQuery = `SELECT * FROM tickets t
@@ -215,9 +218,11 @@ app.get("/home", (req, res) => {
             interested = await task.any(interestedQuery, [req.session.user.id]);
             selling = await task.any(sellingQuery, [req.session.user.id]);
         }
+        
         //Other queries that should always be processed
         const forSale = await task.any(forSaleQuery);
         const comingUp = await task.any(comingUpQuery);
+        console.log(forSale);
         // console.log(comingUp);
         // Does the queries and will wait until all have been completed before proceeding
         return {interested, selling, forSale, comingUp};
@@ -398,8 +403,14 @@ app.post("/ticket/delete", (req, res) => {
 });
 
 
+// Used to view your profile
+app.get('/profile/:id', (req, res) => {
 
-app.get('/profile', (req, res) => {
+    const person = req.params.id;
+    console.log(person);
+
+    const getUserInfo = `SELECT * FROM users WHERE user_id = $1;`;
+
     const getReviews = `SELECT * FROM reviews WHERE user_id = $1;`;
 
     const getSales = `SELECT * FROM tickets t
@@ -407,30 +418,29 @@ app.get('/profile', (req, res) => {
     WHERE user_id = $1 LIMIT 5;`;
 
     db.task('profile-contents', async (task) => {
-        var reviews = await task.any(getReviews, [req.session.user.id]);
-        var selling = await task.any(getSales, [req.session.user.id]);
-        return{reviews, selling};
+        var info = await task.any(getUserInfo, [person]);
+        var reviews = await task.any(getReviews, [person]);
+        var selling = await task.any(getSales, [person]);
+        return{info, reviews, selling};
     })
-    .then(({reviews, selling}) => {
+    .then(({info, reviews, selling}) => {
         res.render('pages/profile', {
             logged_in: req.session.user,
             selling: selling,
             reviews: reviews,
-            username: req.session.user.username,
-            phone: req.session.user.phone,
-            email: req.session.user.email,
+            username: info.username,
+            phone: info.phone,
+            email: info.email,
+            name: info.name,
         });
     })
     .catch((err) => {
         console.log(err.message);
         res.redirect('/home');
-        res.render('pages/', {
-            error: true,
-            message: err.message,
-            logged_in: req.session.user,
-        })
     })
 });
+
+
 
 
 
