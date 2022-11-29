@@ -54,7 +54,11 @@
 
 <script>
     function hideButtons(){
-        var element = document.getElementById('buttons');
-        element.setAttribute("hidden", "");
+        var element = document.querySelectorAll('.buttons');
+        console.log(element);
+        element.forEach(button => {
+            button.setAttribute("hidden", "");
+        })
+        
     }
 </script>

@@ -12,7 +12,7 @@
               <% dateString = new Date(dateString).toUTCString(); %>
               <% dateString = dateString.split(' ').slice(0, 4).join(' '); %>
               <h5 id="date"class="cart-title">Date: <%= dateString %></h5>
-              <div id="buttons" class="row">
+              <div class="row buttons">
                 <!-- Should redirect to the userpage. Unknown link atm -->
                 <form action="/profile/<%= event.user_id %>" method="GET">
                   <!-- Ticket_id used to traceback to the seller when trying to access the page -->
