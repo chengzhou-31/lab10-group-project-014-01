@@ -9,8 +9,8 @@
         <div class="navbar-nav">
           <a id="link" class="nav-link active" aria-current="page" href="/home">Home</a>
           <a id="link" class="nav-link" href="/search">Search</a>
-          <a id="link" class="nav-link" href="/profile">Profile</a>
-          <% if(logged_in){ %> 
+          <% if(logged_in){ %>
+            <a id="link" class="nav-link" href="/profile/<%= logged_in.id %>">My Profile</a>
             <a id="link" class="nav-link" href="/logout">Logout</a>
             <a id="link" class="nav-link" href="/add">New Listing</a>
           <% } else { %> 
