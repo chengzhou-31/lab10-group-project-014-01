@@ -2,27 +2,34 @@
 <%- include ('../partials/navbar') %>
 
 <body>
-    <div class="container">
+    <%- include ('../partials/new_listing') %>
+    <div class="container" style="padding-top: 30px;">
         <div class="row">
-            <div class="col-auto">
-                <h2><%= username%></h2>
-                <hr>
-                <h4>Name: <%= name%></h4>
-                <h4>Phone number: <%= phone%></h4>
-                <h4>Email: <%= email%></h4>
-            </div>
-            <div class="col-8">
-                <div class="conatiner" style="width:auto;">
-                    <h3>Tickets <%= username%> selling</h5>
-                    <div class="container-fluid py-2">
-                        <div class="scrolling-wrapper row flex-row flex-nowrap" style="overflow-x: auto;">
-                            <% object = selling%>
-                            <%- include ('../partials/Cards') %>
-                        </div>
+            <div class="col-sm-4">
+                <h3 class="text-white"><b>Profile details:</b></h5>
+                <div class="card text-white bg-dark" style="width: 20rem; border: 2px solid goldenrod;">
+                    <img class="card-img-top" src="../../resources/img/user.png" alt="">
+                    <div class="card-body text-white bg-dark">
+                        <h5 class="card-title"><b><%- name %></b></h5>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item text-white bg-dark">Username: <%- username %> </li>
+                        <li class="list-group-item text-white bg-dark">Email: <%- email %> </li>
+                        <li class="list-group-item text-white bg-dark">Phone: <%- phone %> </li>
+                    </ul>
+                    <div class="card-body">
+                        <a class="btn btn-primary" onclick="showAdd()">Add Listing</a>
                     </div>
                 </div>
-            
-                <h3>Reivews</h5>
+            </div>
+            <div class="col">
+                <h3 class="text-white"><b>Tickets <%= username%> is selling:</b></h5>
+                    <!-- <div class="scrolling-wrapper row flex-row flex-nowrap" style="overflow-x: auto;"> -->
+                <div>
+                    <% object = selling%>
+                    <%- include ('../partials/Cards') %>
+                </div>
+                <h3 class="text-white"><b>Reviews</b></h5>
                 <div class="container">
                     <div class="card-deck">
                         <% object = reviews %>

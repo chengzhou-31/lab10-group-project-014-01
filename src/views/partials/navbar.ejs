@@ -10,9 +10,8 @@
           <a id="link" class="nav-link active" aria-current="page" href="/home">Home</a>
           <a id="link" class="nav-link" href="/search">Search</a>
           <% if(logged_in){ %>
-            <a id="link" class="nav-link" href="/profile/<%= logged_in.id %>">My Profile</a>
+            <a id="link" class="nav-link" href="/profile/<%= logged_in.id %>">Profile</a>
             <a id="link" class="nav-link" href="/logout">Logout</a>
-            <a id="link" class="nav-link" href="/add">New Listing</a>
           <% } else { %> 
             <a id="link" class="nav-link" href="/login">Login</a>
           <% } %> 

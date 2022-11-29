@@ -1,0 +1,55 @@
+<div class="modal fade" tabindex="-1" id="add-modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header text-white bg-dark">
+          <h3 class="modal-title"><b>Add Listing</b></h3>
+          <button type="button" class="btn-close btn text-white" data-bs-dismiss="modal" aria-label="Close">Close</button>
+        </div>
+        <div class="modal-body text-white bg-dark">
+            <form action="/ticket/add" method="post">
+                <div class="mb-3">
+                    <!-- Event title -->
+                    <label for="Title" class="form-label">Event Title</label>
+                    <input type="text" class="form-control" id="Title" name="title">
+                </div>
+                <div class="mb-3">
+                    <!-- Event price -->
+                    <label for="Price" class="form-label">Price</label>
+                    <input type="number" class="form-control" id="Price" name="price">
+                </div>
+                <div class="mb-3">
+                    <!-- Event Type -->
+                    <label for="Type" class="form-label">Event Type</label>
+                    <input type="text" class="form-control" id="Type" name="type">
+                </div>
+                <div class="mb-3">
+                    <!-- Event location -->
+                    <label for="Location" class="form-label">Location</label>
+                    <input type="text" class="form-control" id="Location" name="loc">
+                </div>
+                <div class="mb-3">
+                    <!-- Event date -->
+                    <label for="Date" class="form-label">Date</label>
+                    <input type="date" class="form-control" id="Date" name="date">
+                </div>
+                <div class="mb-3">
+                    <!-- Event time, optional -->
+                    <label for="Time" class="form-label">Time (Optional)</label>
+                    <input type="time" class="form-control" id="Time" name="time">
+                </div>
+                <div>
+                    <!-- Just a submit button -->
+                    <button id="submit_button" class="btn btn-primary" type="submit">Add listing</button>
+                </div>
+            </form>
+        </div>
+      </div>
+    </div>
+</div>  
+
+<script>
+    function showAdd(){
+        let EVENT_MODAL = new bootstrap.Modal(document.getElementById('add-modal'));
+        EVENT_MODAL.show();
+    }
+</script>

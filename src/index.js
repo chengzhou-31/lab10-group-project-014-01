@@ -409,10 +409,6 @@ app.post("/ticket/delete", (req, res) => {
 app.get('/profile/:id', (req, res) => {
 
     const person = req.params.id;
-    if(!person){
-        person = req.session.user.id
-    }
-    console.log(person);
 
     const getUserInfo = `SELECT * FROM users WHERE user_id = $1;`;
     const getReviews = `SELECT * FROM reviews r
