@@ -1,11 +1,20 @@
-.body {
+body {
     background-color: black;
 }
 
-#pa {
-    background-color: aqua;
+
+h1 {
+    color: goldenrod;
+    font-family: 'Shrikhand';
+} 
+
+
+p {
+    color: lightgray;
 }
 
-.profile.body{
-    
+
+#link {
+    font-family: 'Shrikhand';
+    color: goldenrod;
 }
