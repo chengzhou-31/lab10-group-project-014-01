@@ -224,7 +224,7 @@ app.get("/home", (req, res) => {
         //Other queries that should always be processed
         const forSale = await task.any(forSaleQuery);
         const comingUp = await task.any(comingUpQuery);
-        console.log(forSale);
+        // console.log(forSale);
         // console.log(comingUp);
         // Does the queries and will wait until all have been completed before proceeding
         return {interested, selling, forSale, comingUp};
@@ -409,14 +409,11 @@ app.post("/ticket/delete", (req, res) => {
 app.get('/profile/:id', (req, res) => {
 
     const person = req.params.id;
-    console.log(person);
 
     const getUserInfo = `SELECT * FROM users WHERE user_id = $1;`;
-
     const getReviews = `SELECT * FROM reviews r
                         INNER JOIN users_to_reviews ur ON ur.user_id = $1
                         WHERE ur.review_id = r.review_id;`;
-
     const getSales = `SELECT * FROM tickets t
     INNER JOIN seller_to_tickets st ON t.ticket_id = st.ticket_id
     WHERE user_id = $1 LIMIT 5;`;
@@ -427,8 +424,7 @@ app.get('/profile/:id', (req, res) => {
         var selling = await task.any(getSales, [person]);
         info = info[0];
         return{info, reviews, selling};
-    })
-    .then(({info, reviews, selling}) => {
+    }).then(({info, reviews, selling}) => {
         res.render('pages/profile', {
             logged_in: req.session.user,
             selling: selling,
@@ -438,11 +434,10 @@ app.get('/profile/:id', (req, res) => {
             email: info.email,
             name: info.name,
         });
-    })
-    .catch((err) => {
+    }).catch((err) => {
         console.log(err.message);
         res.redirect('/home');
-    })
+    });
 });
 
 
