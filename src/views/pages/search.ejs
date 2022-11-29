@@ -28,13 +28,18 @@
       </ul>
     </div>  
     <% search_results.forEach(ticket => { %>
-      <div class="card mb-3 text-white bg-dark" style="border: 2px solid goldenrod; max-width: 30%;" id="ticket" hidden>
+      <div class="card mb-3 text-white bg-dark" style="border: 2px solid goldenrod;" id="ticket" hidden>
         <div class="card-body">
           <h5 class="card-title" id="ticket_name"><b><%- ticket.name %> </b></h5>
           <p class="card-subtitle mb-2 text-muted" id="ticket_event"><%- ticket.event_type %> </p>
           <p class="card-text text-reset" id="ticket_location"><%- ticket.location %> </p>
           <p class="card-text text-reset" id="ticket_date"><%- ticket.date %> </p>
           <p class="card-text text-success" id="ticket_price">$<%- ticket.price %> </p>
+          <% if (logged_in) { %>
+            <form action="/interested/add" method="post">
+              <button type="submit" class="btn btn-warning text-white" value="<%= ticket.ticket_id %>" name="ticket_id">I'm interested</button>
+            </form>
+          <% } %>
         </div>
       </div>
     <% }); %>  

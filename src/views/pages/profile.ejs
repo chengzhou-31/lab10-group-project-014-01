@@ -4,6 +4,7 @@
 <body>
     <%- include ('../partials/new_listing') %>
     <%- include ('../partials/new_review') %>
+    <%- include ('../partials/edit_profile') %>
     <div class="container" style="padding-top: 30px;">
         <div class="row">
             <div class="col-sm">
@@ -24,14 +25,16 @@
                             <% if(logged_in.id == person){%>
                                 <a class="btn btn-primary" onclick="showAdd()">Add Listing</a>
                             <%} else {%>
-                                <a class="btn btn-primary" onclick="showAddReview()">Add review</a>
-                        <%}}%>
+                                <a class="btn btn-primary" onclick="showAddReview()">Add Review</a>
+                            <% } %>
+                            <a class="btn btn-primary" onclick="showEdit()">Edit Profile</a>
+                        <%}%>
                     </div>
                 </div>
             </div>
             <div class="col-8">
                 <div class="conatiner" style="width:auto;">
-                    <h3 class="profileHeader"><b>Tickets <%= username%> selling</b></h5>
+                    <h3 class="profileHeader"><b>Tickets <%= username%> is selling</b></h5>
                     <% object = selling%>
                     <%- include ('../partials/Cards') %>
                 </div>
