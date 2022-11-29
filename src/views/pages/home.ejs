@@ -1,30 +1,26 @@
 <%- include ('../partials/header') %>
 <%- include ('../partials/navbar') %>
 
-<body class="body">
+<body>
   <div class="container">
     <!-- Basic info about our website -->
-    <h1>Welcome to QuickTix!!</h1>
+    <h1 id="homeTitle">Welcome to QuickTix!!</h1>
     <p>QuickTix is a ticket exchange website that allows individuals to resell their tickets for 
         events to which they cannot attend. It enables users to view sellers who are offering tickets, purchase tickets 
         of interest, as well as sell their own tickets! Be respectful and enjoy the events!!
     </p>    
 
     <!-- Displays tickets for events happening soon -->
-    <h1>Upcoming Events:</h1>
+    <h1 id="homeTitle">Upcoming Events:</h1>
     <% object = upcoming_events %>
     <%- include ('../partials/Cards') %>
       
 
     <!-- Displays tickets for any events -->
-    <h1>All tickets:</h1>
+    <h1 id="homeTitle">All tickets:</h1>
     
-    <div class="container-fluid py-2">
-      <div class="scrolling-wrapper row flex-row flex-nowrap" style="overflow-x: auto;">
-        <% object = tickets_for_sale %>
-        <%- include ('../partials/Cards') %>
-      </div>
-    </div>
+    <% object = tickets_for_sale %>
+    <%- include ('../partials/Cards') %>
 
     <!-- If the user is logged in display their tickets they have interest in -->
     <!-- As well as any tickets that the user is selling -->

@@ -1,6 +1,6 @@
 <div class="card-deck">
     <% object.forEach(event => { %>
-        <div class="card text-white bg-dark mb-3 w-auto" style="border: 2px solid goldenrod; max-width: 30%;">
+        <div class="card text-white bg-dark mb-3 w-auto ticket">
             <!-- <img class="card-img-top" src="..." alt="Card image cap"> -->  
             <div class="card-body">
 
@@ -12,7 +12,7 @@
               <% dateString = new Date(dateString).toUTCString(); %>
               <% dateString = dateString.split(' ').slice(0, 4).join(' '); %>
               <h5 class="cart-title">Date: <%= dateString %></h5>
-              <div style="display:flex; flex-direction:row; column-gap: 10px;">
+              <div id="date">
                 <!-- Should redirect to the userpage. Unknown link atm -->
                 <form action="/profile/<%= event.user_id %>" method="GET">
                   <!-- Ticket_id used to traceback to the seller when trying to access the page -->

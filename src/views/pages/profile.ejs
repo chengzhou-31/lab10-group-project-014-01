@@ -4,25 +4,23 @@
 <body>
     <div class="container">
         <div class="row">
-            <div class="col-auto">
-                <h2><%= username%></h2>
+            <div class="col-sm">
+                <h2 id="profileText"><%= username%></h2>
                 <hr>
-                <h4>Name: <%= name%></h4>
-                <h4>Phone number: <%= phone%></h4>
-                <h4>Email: <%= email%></h4>
+                <h4 id="profileText">Name: <%= name%></h4>
+                <% if(phone != null){ %>
+                    <h4 id="profileText">Phone number: <%= phone%></h4>
+                <%}%>
+                <h4 id="profileText">Email: <%= email%></h4>
             </div>
             <div class="col-8">
                 <div class="conatiner" style="width:auto;">
-                    <h3>Tickets <%= username%> selling</h5>
-                    <div class="container-fluid py-2">
-                        <div class="scrolling-wrapper row flex-row flex-nowrap" style="overflow-x: auto;">
-                            <% object = selling%>
-                            <%- include ('../partials/Cards') %>
-                        </div>
-                    </div>
+                    <h3 id="profileText">Tickets <%= username%> selling</h5>
+                    <% object = selling%>
+                    <%- include ('../partials/Cards') %>
                 </div>
             
-                <h3>Reivews</h5>
+                <h3 id="profileText">Reivews</h5>
                 <div class="container">
                     <div class="card-deck">
                         <% object = reviews %>
