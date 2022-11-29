@@ -1,0 +1,15 @@
+Release Notes QuickTix V.0.01
+For CU students who want to find affordable local tickets. QuickTix, allows people to resell tickets as well as find the best deals from large ticketing websites.		
+	
+	NOTABLE CHANGES
+		#12 Database:
+			-Created a database with a set of basic tables. Those tables include users,tickets, reviews, users_to_tickets, and users_to_reviews.
+			-We also added data types to the user ID’s in our create.sql file.
+		Basic files:
+			-Added structure for the code by including the docker-compose file,package.json, and Index.js.
+			- Also created file structure where our code would be placed and followed through like views,pages, and partial folders.
+		Wireframes:
+			-Put into perspective on how we want all of our webpages to look like and represent using Wireframes.
+
+	UPDATES
+		-Small updates were made to the database code throughout this first Version however no major changes to the initial code and set up were added.
