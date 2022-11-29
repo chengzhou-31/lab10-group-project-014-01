@@ -11,8 +11,8 @@
               <% var dateString = event.date; %>
               <% dateString = new Date(dateString).toUTCString(); %>
               <% dateString = dateString.split(' ').slice(0, 4).join(' '); %>
-              <h5 class="cart-title">Date: <%= dateString %></h5>
-              <div id="date">
+              <h5 id="date"class="cart-title">Date: <%= dateString %></h5>
+              <div id="buttons">
                 <!-- Should redirect to the userpage. Unknown link atm -->
                 <form action="/profile/<%= event.user_id %>" method="GET">
                   <!-- Ticket_id used to traceback to the seller when trying to access the page -->
