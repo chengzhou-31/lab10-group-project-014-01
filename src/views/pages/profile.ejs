@@ -2,9 +2,9 @@
 <%- include ('../partials/navbar') %>
 
 <body onload="hideButtons()">
-    <%- include ('../partials/new_listing') %>
-    <%- include ('../partials/new_review') %>
-    <%- include ('../partials/edit_profile') %>
+    <%- include ('../partials/new_listing'); %>
+    <%- include ('../partials/new_review', {person: person}); %>
+    <%- include ('../partials/edit_profile'); %>
     <div class="container" style="padding-top: 30px;">
         <div class="row">
             <div class="col-sm">
@@ -35,7 +35,7 @@
                 <div class="conatiner" style="width:auto;">
                     <h3 class="profileHeader"><b>Tickets <%= username%> is selling</b></h5>
                     <% object = selling%>
-                    <%- include ('../partials/Cards') %>
+                    <%- include ('../partials/cards') %>
                 </div>
             
                 <h3 class="profileHeader"><b>Reviews</b></h5>

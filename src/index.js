@@ -450,15 +450,17 @@ app.get('/profile/:id', (req, res) => {
  * Used to add a review to a user. Need to implement a button that does so.
  */
 app.post('/review/add', (req, res) => {
-    const query = `INSERT INTO reviews(date, rating, review)
-                   VALUES(NULL, $1, $2) RETURNING *;`;
-    db.query(query, [req.body.rating, req.body.review])
+    const query = `INSERT INTO reviews(user_id, rating, review)
+                   VALUES($1, $2, $3) RETURNING review_id;`;
+    const applyReview = `INSERT INTO users_to_reviews(user_id, review_id) VALUES ($1, $2);`;
+    db.query(query, [req.session.user.id, req.body.rating, req.body.review])
     .then((data) => {
-        res.status(201).json({
-            status: 'success',
-            data: data,
-            message: 'New ticket interested in',
+        console.log(data);
+        db.query(applyReview, [req.body.id, data[0].review_id])
+        .then((data) => {
+            res.redirect(`/profile/` + req.body.id);
         });
+        
     })
     .catch((err) => {
         console.log(err.message);
