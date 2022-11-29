@@ -12,20 +12,20 @@
               <% dateString = new Date(dateString).toUTCString(); %>
               <% dateString = dateString.split(' ').slice(0, 4).join(' '); %>
               <h5 id="date"class="cart-title">Date: <%= dateString %></h5>
-              <div id="buttons">
+              <div id="buttons" class="row">
                 <!-- Should redirect to the userpage. Unknown link atm -->
                 <form action="/profile/<%= event.user_id %>" method="GET">
                   <!-- Ticket_id used to traceback to the seller when trying to access the page -->
-                  <button class="btn btn-primary" type="submit" value="<%= event.user_id %>" name="user_id">Book</button>
+                  <button id="bookButton" class="btn btn-info" type="submit" value="<%= event.user_id %>" name="user_id">Contact</button>
                 </form>
 
                 <!-- Checks if the user can add to a list of interested in tickets -->
                 <% if (!logged_in) {%>
-                  <button class="btn btn-primary" disabled>Add to List</button>
+                  <button id="listButton" class="btn btn-secondary" disabled>Add to List</button>
                 <% } else { %>
                   <!-- Changed to pass value of the ticket so that it is properly added to the interested in -->
                   <form action="/interested/add" method="POST">
-                    <button type="submit" class="btn btn-primary" value="<%= event.ticket_id %>" name="ticket_id">Add to list</button>
+                    <button id="listButton" type="submit" class="btn btn-secondary" value="<%= event.ticket_id %>" name="ticket_id">Add to list</button>
                   </form>
                 <% } %>  
               </div>
