@@ -20,14 +20,25 @@
                 </form>
 
                 <!-- Checks if the user can add to a list of interested in tickets -->
-                <% if (!logged_in) {%>
+                <% 
+                added = false
+                interested.forEach(card => {
+                  if (card == event) {
+                    added = true
+                  }
+                })
+                if (!logged_in) {%>
                   <button class="btn btn-primary" disabled>Add to List</button>
-                <% } else { %>
+                <% } else if (!added) { %>
                   <!-- Changed to pass value of the ticket so that it is properly added to the interested in -->
                   <form action="/interested/add" method="POST">
                     <button type="submit" class="btn btn-primary" value="<%= event.ticket_id %>" name="ticket_id">Add to list</button>
                   </form>
-                <% } %>  
+                <% } else { %>
+                  <form action="/interested/remove" method="POST">
+                    <button type="submit" class="btn btn-primary" value="<%= event.ticket_id %>" name="ticket_id">Remove from list</button>
+                  </form>
+                  <% } %>
               </div>
             </div>
           </div>

@@ -281,14 +281,14 @@ app.post('/interested/remove', (req, res) => {
     //Query to remove the ticket the user is interested in
     const query = `DELETE FROM interested_in WHERE user_id = $1 AND ticket_id = $2;`;
 
-    db.any(query, [req.body.user.id, req.body.ticket_id])
+    db.any(query, [req.session.user.id, req.body.ticket_id])
     .then(function(data) {
         //If successful, we return that it was removed
-        res.status(200).json({
-            status: 'Removed successfuly',
-            data: data,
-            message: 'Removed',
-        });
+        // res.status(200).json({
+        //     status: 'Removed successfuly',
+        //     data: data,
+        //     message: 'Removed',
+        // });
         res.redirect('/home');
     })
     .catch((err) => {
