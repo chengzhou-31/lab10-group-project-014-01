@@ -4,26 +4,30 @@
 <body>
     <div class="container">
         <div class="row">
-            <div class="col-2">
+            <div class="col-auto">
                 <h2><%= username%></h2>
                 <hr>
                 <h4>Name: <%= name%></h4>
                 <h4>Phone number: <%= phone%></h4>
                 <h4>Email: <%= email%></h4>
             </div>
-            <div class="col-9">
+            <div class="col-8">
                 <div class="conatiner" style="width:auto;">
-                    <h5>Tickets <%= username%> selling</h5>
-                    <% object = selling%>
-                    <%- include ('../partials/Cards') %>
+                    <h3>Tickets <%= username%> selling</h5>
+                    <div class="container-fluid py-2">
+                        <div class="scrolling-wrapper row flex-row flex-nowrap" style="overflow-x: auto;">
+                            <% object = selling%>
+                            <%- include ('../partials/Cards') %>
+                        </div>
+                    </div>
                 </div>
             
-                <h5>Reivews</h5>
+                <h3>Reivews</h5>
                 <div class="container">
                     <div class="card-deck">
-                        <% reviews.forEach(review => { %>
-                            <%- include ('../partials/review')%>
-                        <%});%>
+                        <% object = reviews %>
+                        <%console.log(reviews);%>
+                        <%- include ('../partials/review')%>
                     </div>
                 </div>
             </div>

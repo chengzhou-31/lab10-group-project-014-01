@@ -50,6 +50,8 @@ app.use(
     })
 );
 
+app.use(express.static(__dirname + "/public"));
+
 
 //The user whether or not they are logged in or not
 //Add more values
@@ -411,7 +413,9 @@ app.get('/profile/:id', (req, res) => {
 
     const getUserInfo = `SELECT * FROM users WHERE user_id = $1;`;
 
-    const getReviews = `SELECT * FROM reviews WHERE user_id = $1;`;
+    const getReviews = `SELECT * FROM reviews r
+                        INNER JOIN users_to_reviews ur ON ur.user_id = $1
+                        WHERE ur.review_id = r.review_id;`;
 
     const getSales = `SELECT * FROM tickets t
     INNER JOIN seller_to_tickets st ON t.ticket_id = st.ticket_id
@@ -421,6 +425,7 @@ app.get('/profile/:id', (req, res) => {
         var info = await task.any(getUserInfo, [person]);
         var reviews = await task.any(getReviews, [person]);
         var selling = await task.any(getSales, [person]);
+        info = info[0];
         return{info, reviews, selling};
     })
     .then(({info, reviews, selling}) => {
