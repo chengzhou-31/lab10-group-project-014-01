@@ -359,8 +359,6 @@ app.post('/ticket/add', (req, res) =>{
 });
 
 
-
-
 //Remove a ticket from the database
 app.post("/ticket/delete", (req, res) => {
     ticket_id = req.params.ticket_id;
@@ -442,11 +440,6 @@ app.get('/profile/:id', (req, res) => {
 });
 
 
-
-
-
-
-
 /**
  *  Query for finding reviews for a specific user
     const reviewsQuery = `SELECT * FROM reviews r
@@ -510,6 +503,28 @@ app.delete('/review/delete', (req,res) => {
             error: true,
             message: err.message,
         });
+    });
+});
+
+
+app.post('/edit_profile', async(req, res) => {
+    const name = req.body.username;
+    const email = req.body.email;
+    const username = req.body.username;
+    const phone = req.body.phone;
+
+    console.log(req.session.user.id);
+    const hash = await bcrypt.hash(req.body.password, 10);
+    const query = `UPDATE users SET username = $1, password = $2, email = $3, name = $4, phone = $5
+                WHERE user_id = ${req.session.user.id};`;
+
+    console.log('got past hash')
+    db.oneOrNone(query, [username, hash, email, name, phone]).then(() => {
+        console.log('edit successful');
+        res.redirect(`/profile/${req.session.user.id}`);
+    }).catch(error => {
+        console.log(error.message);
+        res.redirect(`/profile/${req.session.user.id}`);
     });
 });
 
