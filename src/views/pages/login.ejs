@@ -1,22 +1,7 @@
 <%- include ('../partials/header') %>
 <%- include ('../partials/navbar') %>
-<body class="body">
+<body>
     <main>
-        <!-- THE REST OF YOUR HTML CODE GOES HERE -->
-        <!-- <div class="container">
-            <h1>Login</h1>
-            <form action="/login" method="post">
-                <p>Enter Username</p>
-                <input id="username" name="username">
-                <p>Enter Password</p>
-                <input id="password" name="password">
-                <button type="submit" class="btn btn-primary">Login</button>
-            </form>
-        </div>
-        <div class="container">
-            <a href="../pages/register" class="btn btn-primary" tabindex="-1" role="button" >Or create an account.</a>
-        </div> -->
-
         <div class="modal fade" tabindex="-1" id="event-modal">
             <div class="modal-dialog">
               <div class="modal-content">
@@ -68,7 +53,7 @@
         </script>
 
         <div class="container" style="padding-top: 35px;">
-            <h1><b>Login</b></h1>
+            <h1 id=""><b>Login</b></h1>
             <form action="/login" method="POST">
                 <div class="form-group mb-3">
                     <label for="username" style="color: white;">Username</label>

@@ -2,7 +2,7 @@
 <%- include ('../partials/navbar') %> 
 
 <div class="container p-1 pt-5" id="search_container">
-  <h2><b>Search Anything</b></h2>
+  <h2 class="text-white"><b>Search Anything</b></h2>
   <!-- <form> -->
     <div class="input-group mb-3">
       <input type="text" class="form-control" id="search" aria-label="search">
@@ -28,7 +28,7 @@
       </ul>
     </div>  
     <% search_results.forEach(ticket => { %>
-      <div class="card mb-3" id="ticket" hidden>
+      <div class="card mb-3 text-white bg-dark" style="border: 2px solid goldenrod; max-width: 30%;" id="ticket" hidden>
         <div class="card-body">
           <h5 class="card-title" id="ticket_name"><b><%- ticket.name %> </b></h5>
           <p class="card-subtitle mb-2 text-muted" id="ticket_event"><%- ticket.event_type %> </p>

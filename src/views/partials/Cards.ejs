@@ -1,6 +1,6 @@
 <div class="card-deck">
     <% object.forEach(event => { %>
-        <div class="card text-white bg-dark mb-3" style="border: 2px solid goldenrod">
+        <div class="card text-white bg-dark mb-3 w-auto ticket">
             <!-- <img class="card-img-top" src="..." alt="Card image cap"> -->  
             <div class="card-body">
 
@@ -11,13 +11,12 @@
               <% var dateString = event.date; %>
               <% dateString = new Date(dateString).toUTCString(); %>
               <% dateString = dateString.split(' ').slice(0, 4).join(' '); %>
-              <!-- <% console.log(dateString); %> -->
               <h5 class="cart-title">Date: <%= dateString %></h5>
-              <div style="display:flex; flex-direction:row; column-gap: 10px;">
+              <div id="date">
                 <!-- Should redirect to the userpage. Unknown link atm -->
-                <form action="/userpage" method="GET">
+                <form action="/profile/<%= event.user_id %>" method="GET">
                   <!-- Ticket_id used to traceback to the seller when trying to access the page -->
-                  <button class="btn btn-primary" type="submit" value="<%= event.ticket_id%>">Book</button>
+                  <button class="btn btn-primary" type="submit" value="<%= event.user_id %>" name="user_id">Book</button>
                 </form>
 
                 <!-- Checks if the user can add to a list of interested in tickets -->

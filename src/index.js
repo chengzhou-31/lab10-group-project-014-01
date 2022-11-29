@@ -50,6 +50,8 @@ app.use(
     })
 );
 
+app.use(express.static(__dirname + "/resources"));
+
 
 //The user whether or not they are logged in or not
 //Add more values
@@ -57,6 +59,7 @@ app.use(
 const user = {
     username: undefined,
     email: undefined,
+    phone: undefined,
     id: undefined,
 };
 
@@ -120,9 +123,9 @@ app.post("/login", async (req, res) => {
                 const user = {
                     username: username,
                     email: data[0].email,
-                    id: data[0].id
+                    phone: data[0].phone,
+                    id: data[0].user_id
                 }
-
                 // req.session.user = {
                 //     api_key: process.env.API_KEY,
                 // };
@@ -156,7 +159,7 @@ app.post('/register', async (req, res) => {
     if(req.body.password != req.body.passwordConf){
         throw new Error('Password does not match');
     }
-    console.log(req.body.password);
+    // console.log(req.body.password);
     const hash = await bcrypt.hash(req.body.password, 10);
     const query = `INSERT INTO users (username, password, email, name, phone)
                 VALUES ($1, $2, $3, $4, $5);`;
@@ -186,17 +189,21 @@ app.get("/home", (req, res) => {
     //List of tickets user is interested in
     const interestedQuery = `SELECT DISTINCT * FROM tickets t
                         INNER JOIN interested_in i ON user_id = $1
+                        INNER JOIN seller_to_tickets st ON st.ticket_id = t.ticket_id
                         WHERE t.ticket_id = i.ticket_id LIMIT 5;`;
     
     //List of tickets that are for sale. Lists the first 10 tickets
-    const forSaleQuery = `SELECT * FROM tickets LIMIT 5;`;
+    const forSaleQuery = `SELECT * FROM tickets t
+                            INNER JOIN seller_to_tickets st ON st.ticket_id = t.ticket_id;`;
 
 
     //Finds if the current date is between the current month and next month?
     //Need more test cases for when the date is outside 1 month from now
-    const comingUpQuery = `SELECT * FROM tickets
+    const comingUpQuery = `SELECT * FROM tickets t
+                        INNER JOIN seller_to_tickets st ON st.ticket_id = t.ticket_id
                         WHERE (EXTRACT(MONTH FROM date) BETWEEN EXTRACT(MONTH FROM CURRENT_DATE) AND EXTRACT(MONTH FROM CURRENT_DATE) + 1) 
-                        AND (EXTRACT(YEAR FROM date) = EXTRACT(YEAR FROM CURRENT_DATE)) LIMIT 5;`;
+                        AND (EXTRACT(YEAR FROM date) = EXTRACT(YEAR FROM CURRENT_DATE))
+                        ORDER BY date LIMIT 5;`;
     //List of tickets the user is selling
     const sellingQuery = `SELECT * FROM tickets t
                           INNER JOIN seller_to_tickets st ON t.ticket_id = st.ticket_id
@@ -213,10 +220,12 @@ app.get("/home", (req, res) => {
             interested = await task.any(interestedQuery, [req.session.user.id]);
             selling = await task.any(sellingQuery, [req.session.user.id]);
         }
+        
         //Other queries that should always be processed
         const forSale = await task.any(forSaleQuery);
         const comingUp = await task.any(comingUpQuery);
-        console.log(comingUp);
+        // console.log(forSale);
+        // console.log(comingUp);
         // Does the queries and will wait until all have been completed before proceeding
         return {interested, selling, forSale, comingUp};
     })
@@ -394,6 +403,48 @@ app.post("/ticket/delete", (req, res) => {
         });
     });
 });
+
+
+// Used to view your profile
+app.get('/profile/:id', (req, res) => {
+
+    const person = req.params.id;
+
+    const getUserInfo = `SELECT * FROM users WHERE user_id = $1;`;
+    const getReviews = `SELECT * FROM reviews r
+                        INNER JOIN users_to_reviews ur ON ur.user_id = $1
+                        WHERE ur.review_id = r.review_id;`;
+    const getSales = `SELECT * FROM tickets t
+    INNER JOIN seller_to_tickets st ON t.ticket_id = st.ticket_id
+    WHERE user_id = $1 LIMIT 5;`;
+
+    db.task('profile-contents', async (task) => {
+        var info = await task.any(getUserInfo, [person]);
+        var reviews = await task.any(getReviews, [person]);
+        var selling = await task.any(getSales, [person]);
+        info = info[0];
+        return{info, reviews, selling};
+    }).then(({info, reviews, selling}) => {
+        res.render('pages/profile', {
+            logged_in: req.session.user,
+            person: person,
+            selling: selling,
+            reviews: reviews,
+            username: info.username,
+            phone: info.phone,
+            email: info.email,
+            name: info.name,
+        });
+    }).catch((err) => {
+        console.log(err.message);
+        res.redirect('/home');
+    });
+});
+
+
+
+
+
 
 
 /**
