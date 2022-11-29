@@ -28,13 +28,13 @@
       <!-- Interested in -->
       <% object = interested %>
       <% if(object.length > 0){ %>
-        <h1>Your Saved Tickets:</h1>
+        <h1  id="homeTitle">Your Saved Tickets:</h1>
         <%- include ('../partials/Cards') %>
       <%}%>
       <!-- Selling -->
       <% object = selling%>
       <% if(object.length > 0){ %>
-        <h1>Tickets you're selling:</h1>
+        <h1 id="homeTitle">Tickets you're selling:</h1>
         <%- include ('../partials/Cards') %>
       <%}%>
     <% } %>
