@@ -50,7 +50,7 @@ app.use(
     })
 );
 
-app.use(express.static(__dirname + "/public"));
+app.use(express.static(__dirname + "/resources"));
 
 
 //The user whether or not they are logged in or not
