@@ -1,7 +1,7 @@
 <%- include ('../partials/header') %>
 <%- include ('../partials/navbar') %>
 
-<body>
+<body onload="hideButtons()">
     <%- include ('../partials/new_listing') %>
     <%- include ('../partials/new_review') %>
     <div class="container" style="padding-top: 30px;">
@@ -20,7 +20,6 @@
                     </ul>
                     <div class="card-body">
                         <% if(logged_in){ %>
-                            <% console.log(logged_in); console.log(person);%>
                             <% if(logged_in.id == person){%>
                                 <a class="btn btn-primary" onclick="showAdd()">Add Listing</a>
                             <%} else {%>
@@ -40,7 +39,6 @@
                 <div class="container">
                     <div class="card-deck">
                         <% object = reviews %>
-                        <%console.log(reviews);%>
                         <%- include ('../partials/review')%>
                     </div>
                 </div>
@@ -49,5 +47,11 @@
     </div>
 
 
-
 <%- include ('../partials/footer') %>
+
+<script>
+    function hideButtons(){
+        var element = document.getElementById('buttons');
+        element.setAttribute("hidden", "");
+    }
+</script>
