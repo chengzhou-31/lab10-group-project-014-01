@@ -13,14 +13,18 @@
     <!-- Displays tickets for events happening soon -->
     <h1 id="homeTitle">Upcoming Events:</h1>
     <% object = upcoming_events %>
-    <%- include ('../partials/cards') %>
+    <div class="card-columns">
+      <%- include ('../partials/cards') %>
+    </div>
       
 
     <!-- Displays tickets for any events -->
     <h1 id="homeTitle">All tickets:</h1>
     
     <% object = tickets_for_sale %>
-    <%- include ('../partials/cards') %>
+    <div class="card-columns">
+      <%- include ('../partials/cards') %>
+    </div>
 
     <!-- If the user is logged in display their tickets they have interest in -->
     <!-- As well as any tickets that the user is selling -->
@@ -29,13 +33,17 @@
       <% object = interested %>
       <% if(object.length > 0){ %>
         <h1 id="homeTitle">Your Saved Tickets:</h1>
-        <%- include ('../partials/cards') %>
+        <div class="card-columns">
+          <%- include ('../partials/cards') %>
+        </div>
       <%}%>
       <!-- Selling -->
       <% object = selling%>
       <% if(object.length > 0){ %>
         <h1 id="homeTitle">Tickets you're selling:</h1>
-        <%- include ('../partials/cards') %>
+        <div class="card-columns" style="display: inline-block; column-break-inside: avoid">
+          <%- include ('../partials/cards') %>
+        </div>
       <%}%>
     <% } %>
 

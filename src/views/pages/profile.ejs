@@ -35,7 +35,9 @@
                 <div class="conatiner" style="width:auto;">
                     <h3 class="profileHeader"><b>Tickets <%= username%> is selling</b></h5>
                     <% object = selling%>
-                    <%- include ('../partials/cards') %>
+                    <div class="card-columns">
+                        <%- include ('../partials/cards') %>
+                    </div>
                 </div>
             
                 <h3 class="profileHeader"><b>Reviews</b></h5>

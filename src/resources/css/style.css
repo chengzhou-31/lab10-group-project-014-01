@@ -44,7 +44,6 @@ p {
 /* Card specific styles */
 .ticket{
     border: 2px solid goldenrod; 
-    max-width: 40%;
 }
 
 .review{
