@@ -3,18 +3,11 @@
 
 <body>
     <%- include ('../partials/new_listing') %>
+    <%- include ('../partials/new_review') %>
     <div class="container" style="padding-top: 30px;">
         <div class="row">
             <div class="col-sm">
-                <h2 id="profileText"><%= username%></h2>
-                <hr>
-                <h4 id="profileText">Name: <%= name%></h4>
-                <% if(phone != null){ %>
-                    <h4 id="profileText">Phone number: <%= phone%></h4>
-                <%}%>
-                <h4 id="profileText">Email: <%= email%></h4>
-            <div class="col-sm-4">
-                <h3 class="text-white"><b>Profile details:</b></h5>
+                <h3 class="profileHeader"><b>Profile details:</b></h5>
                 <div class="card text-white bg-dark" style="width: 20rem; border: 2px solid goldenrod;">
                     <img class="card-img-top" src="../../resources/img/user.png" alt="">
                     <div class="card-body text-white bg-dark">
@@ -26,19 +19,24 @@
                         <li class="list-group-item text-white bg-dark">Phone: <%- phone %> </li>
                     </ul>
                     <div class="card-body">
-                        <a class="btn btn-primary" onclick="showAdd()">Add Listing</a>
+                        <% if(logged_in){ %>
+                            <% console.log(logged_in); console.log(person);%>
+                            <% if(logged_in.id == person){%>
+                                <a class="btn btn-primary" onclick="showAdd()">Add Listing</a>
+                            <%} else {%>
+                                <a class="btn btn-primary" onclick="showAddReview()">Add review</a>
+                        <%}}%>
                     </div>
                 </div>
             </div>
             <div class="col-8">
                 <div class="conatiner" style="width:auto;">
-                    <h3 id="profileText">Tickets <%= username%> selling</h5>
+                    <h3 class="profileHeader"><b>Tickets <%= username%> selling</b></h5>
                     <% object = selling%>
                     <%- include ('../partials/Cards') %>
                 </div>
             
-                <h3 id="profileText">Reivews</h5>
-                <h3 class="text-white"><b>Reviews</b></h5>
+                <h3 class="profileHeader"><b>Reviews</b></h5>
                 <div class="container">
                     <div class="card-deck">
                         <% object = reviews %>

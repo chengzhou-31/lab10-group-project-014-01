@@ -427,6 +427,7 @@ app.get('/profile/:id', (req, res) => {
     }).then(({info, reviews, selling}) => {
         res.render('pages/profile', {
             logged_in: req.session.user,
+            person: person,
             selling: selling,
             reviews: reviews,
             username: info.username,

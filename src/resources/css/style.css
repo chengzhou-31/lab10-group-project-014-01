@@ -33,10 +33,12 @@ p {
 
 /* Css for the profile */
 #profileText {
-    color: grey;
+    color: white;
 }
 
-
+.profileHeader {
+    color: goldenrod;
+}
 
 
 /* Card specific styles */
