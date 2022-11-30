@@ -516,13 +516,13 @@ app.post('/edit_profile', async(req, res) => {
     const query = `UPDATE users SET username = $1, password = $2, email = $3, name = $4, phone = $5
                 WHERE user_id = ${req.session.user.id};`;
 
-    console.log('got past hash')
+    // console.log('got past hash')
     db.oneOrNone(query, [username, hash, email, name, phone]).then(() => {
-        console.log('edit successful');
-        res.redirect(`/profile/${req.session.user.id}`);
+        // console.log('edit successful');
+        res.redirect(`/profile/` + req.body.person);
     }).catch(error => {
-        console.log(error.message);
-        res.redirect(`/profile/${req.session.user.id}`);
+        // console.log(error.message);
+        res.redirect(`/profile/` + req.body.person);
     });
 });
 
