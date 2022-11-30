@@ -22,38 +22,46 @@
                     <div class="card-body">
                         <% if(logged_in){ %>
                             <% if(logged_in.id == person){%>
-                                <a class="btn btn-primary" onclick="showAdd()">Add Listing</a>
-                                <a class="btn btn-primary" onclick="showEdit()">Edit Profile</a>
+                                <a class="btn btn-warning" onclick="showAdd()">Add Listing</a>
+                                <a class="btn btn-warning" onclick="showEdit()">Edit Profile</a>
                             <%} else {%>
-                                <a class="btn btn-primary" onclick="showAddReview()">Add Review</a>
+                                <a class="btn btn-warning" onclick="showAddReview()">Add Review</a>
                             <% } %>
                         <%}%>
                     </div>
                 </div>
             </div>
             <div class="col-8">
-                <% if(logged_in && (logged_in.id == person)){ %>
+                <% if(logged_in && (logged_in.id == person) &&(interested.length > 0)){ %>
                     <h3 class="profileHeader"><b>Tickets you're interested in</b></h3>
                     <div class="card-columns interestedIn">
                         <% object = interested %>
                         <%- include ('../partials/cards', {interested: interested}) %>
                     </div>
                 <% } %>
-                <div class="conatiner" style="width:auto;">
-                    <h3 class="profileHeader"><b>Tickets <%= username%> is selling</b></h5>
-                    <% object = selling%>
-                    <div class="card-columns">
-                        <%- include ('../partials/cards', {interested: interested}) %>
+                <% if(selling.length > 0){ %>
+                    <div class="conatiner" style="width:auto;">
+                        <h3 class="profileHeader"><b>Tickets <%= username%> is selling</b></h5>
+                        <% object = selling%>
+                        <div class="card-columns">
+                            <%- include ('../partials/cards', {interested: interested}) %>
+                        </div>
                     </div>
-                </div>
-            
-                <h3 class="profileHeader"><b>Reviews</b></h5>
-                <div class="container">
-                    <div class="card-deck">
-                        <% object = reviews %>
-                        <%- include ('../partials/review', {user: logged_in, profile: person})%>
+                <% } else { %>
+                    <h3 class="profileHeader"><%= username %> is not selling anything</h3>
+                <% } %>
+
+                <% if(reviews.length > 0){ %>
+                    <h3 class="profileHeader"><b>Reviews</b></h5>
+                    <div class="container">
+                        <div class="card-deck">
+                            <% object = reviews %>
+                            <%- include ('../partials/review', {user: logged_in, profile: person})%>
+                        </div>
                     </div>
-                </div>
+                <% } else {%>
+                    <h3 class="profileHeader"><%= username %> has no reviews</h3>
+                <% } %>
             </div>
         </div>
     </div>

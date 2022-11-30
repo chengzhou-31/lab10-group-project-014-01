@@ -16,7 +16,7 @@
                 <!-- Should redirect to the userpage. Unknown link atm -->
                 <form action="/profile/<%= event.user_id %>" method="GET">
                   <!-- Ticket_id used to traceback to the seller when trying to access the page -->
-                  <button id="bookButton" class="btn btn-info" type="submit" value="<%= event.user_id %>" name="user_id">Contact</button>
+                  <button id="bookButton" class="btn btn-warning" type="submit" value="<%= event.user_id %>" name="user_id">Contact</button>
                 </form>
 
                 <!-- Checks if the user can add to a list of interested in tickets -->
@@ -29,15 +29,15 @@
                     }
                   })
                   if (!logged_in) {%>
-                    <button class="btn btn-primary" disabled>Add to List</button>
+                    <button class="btn btn-warning" disabled>Add to List</button>
                   <% } else if (!added) { %>
                     <!-- Changed to pass value of the ticket so that it is properly added to the interested in -->
                     <form action="/interested/add" method="POST">
-                      <button type="submit" class="btn btn-primary" value="<%= event.ticket_id %>" name="ticket_id">Add to list</button>
+                      <button type="submit" class="btn btn-warning" value="<%= event.ticket_id %>" name="ticket_id">Add to list</button>
                     </form>
                   <% } else { %>
                     <form action="/interested/remove" method="POST">
-                      <button type="submit" class="btn btn-primary" value="<%= event.ticket_id %>" name="ticket_id">Remove from list</button>
+                      <button type="submit" class="btn btn-warning" value="<%= event.ticket_id %>" name="ticket_id">Remove from list</button>
                     </form>
                     <% } %>  
                 </div>
