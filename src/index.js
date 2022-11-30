@@ -286,11 +286,11 @@ app.post('/interested/remove', (req, res) => {
 });
 
 
-app.get('/add', (req,res) => {
-    res.render('pages/add',{
-        logged_in: req.session.user,
-    });
-});
+// app.get('/add', (req,res) => {
+//     res.render('pages/add',{
+//         logged_in: req.session.user,
+//     });
+// });
 
 
 //Adds a ticket to the database
