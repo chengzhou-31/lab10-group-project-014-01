@@ -409,7 +409,7 @@ app.get('/profile/:id', (req, res) => {
     const person = req.params.id;
 
     const getUserInfo = `SELECT * FROM users WHERE user_id = $1;`;
-    const getReviews = `SELECT * FROM reviews r
+    const getReviews = `SELECT r.review_id, r.user_id, date, rating, review FROM reviews r
                         INNER JOIN users_to_reviews ur ON ur.user_id = $1
                         WHERE ur.review_id = r.review_id;`;
     const getSales = `SELECT * FROM tickets t
@@ -458,9 +458,11 @@ app.get('/profile/:id', (req, res) => {
  * Used to add a review to a user. Need to implement a button that does so.
  */
 app.post('/review/add', (req, res) => {
-    const query = `INSERT INTO reviews(user_id, rating, review)
-                   VALUES($1, $2, $3) RETURNING review_id;`;
+    const query = `INSERT INTO reviews(user_id, date, rating, review)
+                   VALUES($1, CURRENT_DATE, $2, $3) RETURNING review_id;`;
+
     const applyReview = `INSERT INTO users_to_reviews(user_id, review_id) VALUES ($1, $2);`;
+
     db.query(query, [req.session.user.id, req.body.rating, req.body.review])
     .then((data) => {
         console.log(data);
@@ -480,34 +482,20 @@ app.post('/review/add', (req, res) => {
  * Removes a review from the database
  * Currently unuseable
  */
-app.delete('/review/delete', (req,res) => {
+app.post('/review/delete/:id', (req,res) => {
     db.task("delete-review", (task) => {
         return task.batch([
-            task.none(
-                `DELETE FROM
-                    reviews
-                WHERE
-                    review_id = $1;`,
-                    [req.params.review_id]
-            ),
-            task.none(
-                `DELETE FROM
-                    users_to_reviews
-                WHERE
-                    review_id = $1;`,
-                    [req.params.review_id]
-            ),
-            
-        ]);
+            task.none(`DELETE FROM users_to_reviews
+            WHERE review_id = $1;`, [req.params.id]),
+
+            task.none(`DELETE FROM reviews
+            WHERE review_id = $1;`, [req.params.id]),
+
+        ])
     })
     .then(
-        (data) => {
-            res.status(200).json({
-                status: 'removed',
-                data: data,
-                message: 'Deleted successfully'
-            });
-    })
+        res.redirect('/profile/' + req.body.user_id)
+    )
     .catch((err) => {
         res.redirect("/home", {
             error: true,

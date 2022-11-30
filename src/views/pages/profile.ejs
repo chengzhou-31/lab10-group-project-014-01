@@ -52,7 +52,7 @@
                 <div class="container">
                     <div class="card-deck">
                         <% object = reviews %>
-                        <%- include ('../partials/review')%>
+                        <%- include ('../partials/review', {user: logged_in, profile: person})%>
                     </div>
                 </div>
             </div>

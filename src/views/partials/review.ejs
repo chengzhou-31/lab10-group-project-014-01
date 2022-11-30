@@ -7,8 +7,16 @@
             </div>
             <div class="card-body">
             <h5 class="card-title">Rating: <%= review.rating %></h5>
-                <h5 class="cart-title">Review: <%= review.review %></h5>
+            <h5 class="cart-title">Review: <%= review.review %></h5>
+
+            <%if(user && (user.id == review.user_id)){ %>
+                <form action="/review/delete/<%= review.review_id %>" method="POST">
+                    <button type="submit" class="btn btn-primary" value=<%= profile %> name="user_id">Delete Review</button>
+                </form>
+            <% } %>
+                
             </div>
+            
         </div>
     </div>
 </div>
