@@ -494,7 +494,7 @@ app.post('/review/delete/:id', (req,res) => {
 
 
 app.post('/edit_profile', async(req, res) => {
-    const name = req.body.username;
+    const name = req.body.name;
     const email = req.body.email;
     const username = req.body.username;
     const phone = req.body.phone;
