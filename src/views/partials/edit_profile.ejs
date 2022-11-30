@@ -61,7 +61,6 @@
     let password_regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
     let password = document.querySelector('#password');
     password.addEventListener('input', e => {
-        console.log(password.value);
         if(!password_regex.test(password.value)){
             password.setCustomValidity('Password must be 8 characters and contain at least 1 number and 1 special character.');  
         } else {
@@ -71,7 +70,6 @@
 
     let passwordConf = document.querySelector('#passwordConf');
     passwordConf.addEventListener('input', e => {
-        console.log(passwordConf.value);
         if(passwordConf.value != password.value){
             passwordConf.setCustomValidity('Passwords must match.');  
         } else {

@@ -88,7 +88,8 @@ app.get("/login", (req, res) => {
             res.render('pages/login', {
                 error: true,
                 message: error.message,
-                logged_in: req.session.user
+                logged_in: req.session.user,
+                user: [{username: 'jake'}]
             });
         });
     }
@@ -100,6 +101,9 @@ app.get("/login", (req, res) => {
 app.post("/login", async (req, res) => {
     const username = req.body.username;
     const query = `SELECT * FROM users WHERE username = $1;`;
+
+    const users = await db.any('SELECT username FROM users;');
+    console.log(users);
 
     db.any(query, [username]).then(async (data) => {
         if(data[0].username){
@@ -127,7 +131,8 @@ app.post("/login", async (req, res) => {
         res.render("pages/login", {
             error: true,
             message: error.message,
-            logged_in: req.session.user
+            logged_in: req.session.user,
+            users: users
         });
     });
 });
@@ -344,16 +349,16 @@ app.post('/ticket/add', (req, res) =>{
 
 //Remove a ticket from the database
 app.post("/ticket/delete", (req, res) => {
-    ticket_id = req.params.ticket_id;
+    ticket_id = req.body.ticket_id;
     db.task("delete-ticket", (task) => {
         return task.batch([
-            //Delete from tickets
+            //Delete from the seller
             task.none(
                 `DELETE FROM
-                    tickets
+                    seller_to_tickets
                 WHERE
                     ticket_id = $1;`,
-                    [ticket_id]              //List of params aka ticket id
+                    [ticket_id]
             ),
             //Delete from interested in tickets
             task.none(
@@ -363,25 +368,25 @@ app.post("/ticket/delete", (req, res) => {
                     ticket_id = $1;`,
                     [ticket_id]
             ),
-            //Delete from the seller
+            //Delete from tickets
             task.none(
                 `DELETE FROM
-                    seller_to_tickets
+                    tickets
                 WHERE
                     ticket_id = $1;`,
-                    [ticket_id]
+                    [ticket_id]              //List of params aka ticket id
             ),
             
-        ]);
+            
+            
+        ])
     })
     .then(
         //What do to after the ticket has been removed, if it was removed
-    )
-    .catch((err) => {
-        res.render("/home", {
-            error: true,
-            message: err.message,
-        });
+        res.redirect('/home')
+    ).catch((err) => {
+        console.log(err.message);
+        res.redirect('/home');
     });
 });
 

@@ -40,10 +40,10 @@
                     </div>
                 <% } %>
                 <% if(selling.length > 0){ %>
-                    <div class="conatiner" style="width:auto;">
+                    <div class="container" style="width:auto;">
                         <h3 class="profileHeader"><b>Tickets <%= username%> is selling</b></h5>
                         <% object = selling%>
-                        <div class="card-columns">
+                        <div class="card-columns" id="selling">
                             <%- include ('../partials/cards', {interested: interested}) %>
                         </div>
                     </div>
@@ -70,17 +70,60 @@
 <%- include ('../partials/footer') %>
 
 <script>
+    (function showDelete(){
+        // get selling, find selling tickets div
+        let selling_tickets = '<%- JSON.stringify(selling) %>';
+        selling_tickets = JSON.parse(selling_tickets);
+        console.log(selling_tickets);
+        const selling = document.querySelector('#selling');
+        const sel_chil = selling.children;
+        let ticket_name;
+
+        // add delete button to every card
+        if(selling.hasChildNodes){
+            for(let i=0; i < sel_chil.length; i++){
+                // create delete button form/element
+                const button_row = document.createElement('div');
+                button_row.className = 'row buttons';
+                button_row.style = 'padding-top: 5px; padding-left: 15px';
+                const delete_form = document.createElement('form');
+                delete_form.action = '/ticket/delete';
+                delete_form.method = 'POST';
+                const delete_button = document.createElement('button');
+                delete_button.innerHTML = 'Delete Ticket';
+                delete_button.type = 'submit';
+                delete_button.className = 'btn btn-outline-warning';
+                delete_button.id = 'seller';
+                delete_button.name = 'ticket_id';
+
+                console.log(sel_chil[i].firstElementChild.firstElementChild.firstElementChild.innerHTML);
+                ticket_name = sel_chil[i].firstElementChild.firstElementChild.firstElementChild.innerHTML;
+                selling_tickets.forEach(ticket => {
+                    if(ticket.name == ticket_name){
+                        console.log('matching ticket, adding remove...');
+                        delete_button.value = ticket.ticket_id;
+                        delete_form.appendChild(delete_button);
+                        button_row.appendChild(delete_form);
+                        console.log(button_row);
+                        sel_chil[i].firstElementChild.appendChild(button_row);
+                    }
+                });
+            }
+        }
+    })()
+
     function hideButtons(){
         var element = document.querySelectorAll('.buttons .btn');
         // console.log(element);
         element.forEach(button => {
-            button.setAttribute("hidden", "");
+            if(button.id != 'seller'){
+                button.setAttribute("hidden", "");
+            }
         });
         element = document.querySelectorAll('.interestedIn .buttons .listing .btn');
-        console.log(element);
+        // console.log(element);
         element.forEach(button => {
             button.removeAttribute("hidden");
         })
-        
     }
 </script>
