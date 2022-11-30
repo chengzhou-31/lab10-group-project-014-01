@@ -25,7 +25,8 @@ Team Number: 01
 ## API Details
 - TODO
 
-## Version Release Notes - v1.1
+## Version Release Notes
+### v1.1
 - Minor bug fixes
 - Delete API for selling tickets works
 - Can now delete tickets you are selling in /profile
