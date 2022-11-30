@@ -23,6 +23,7 @@
                         <% if(logged_in){ %>
                             <% if(logged_in.id == person){%>
                                 <a class="btn btn-primary" onclick="showAdd()">Add Listing</a>
+                                
                             <%} else {%>
                                 <a class="btn btn-primary" onclick="showAddReview()">Add Review</a>
                             <% } %>
@@ -32,11 +33,18 @@
                 </div>
             </div>
             <div class="col-8">
+                <% if(logged_in && (logged_in.id == person)){ %>
+                    <h3 class="profileHeader"><b>Tickets you're interested in</b></h3>
+                    <div class="card-columns interestedIn">
+                        <% object = interested %>
+                        <%- include ('../partials/cards', {interested: interested}) %>
+                    </div>
+                <% } %>
                 <div class="conatiner" style="width:auto;">
                     <h3 class="profileHeader"><b>Tickets <%= username%> is selling</b></h5>
                     <% object = selling%>
                     <div class="card-columns">
-                        <%- include ('../partials/cards') %>
+                        <%- include ('../partials/cards', {interested: interested}) %>
                     </div>
                 </div>
             
@@ -56,10 +64,15 @@
 
 <script>
     function hideButtons(){
-        var element = document.querySelectorAll('.buttons');
+        var element = document.querySelectorAll('.buttons .btn');
         // console.log(element);
         element.forEach(button => {
             button.setAttribute("hidden", "");
+        });
+        element = document.querySelectorAll('.interestedIn .buttons .listing .btn');
+        console.log(element);
+        element.forEach(button => {
+            button.removeAttribute("hidden");
         })
         
     }
