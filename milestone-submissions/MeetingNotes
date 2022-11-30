@@ -103,3 +103,84 @@ Profile Page - adding ticket - major functionality that needs to
 Contact Model notifications would require another table.
 
 How to integrate second hand tickets.
+
+
+Notes Meeting 4: 2:30pm on Nov 30 2022
+
+Starting with Demo:
+	Search functionality - by title and by cost range
+	Login and registration pages
+		User name is unique and has restrictions
+		Submit stores user information inside database
+	Successfully logged in and in home page
+		Can add to list and view all tickets
+		Separate category for saved tickets
+		Multiple tickets can be saved
+		Tickets can also be removed from the saved list
+	Profile Section
+		Personal profile page
+		Can view basic info 
+			Username
+			Email
+			Phone number
+		Allows users to contact the seller of a ticket
+		Can add a listing of a new ticket
+			Add price and other information like location
+		After “add listing” brings user back to homepage
+		From the Profile page can remove the listing.
+		Registers listing as next day and next month.
+			Pulls current date and checks next month as well.
+!			Adjust to only show future dates.
+				Or remove / rename
+		Can change name and phone number within profile.
+!			Did NOT change Full Name.
+			DID change the phone number.
+	Home
+		John
+			Can view phone number
+			Tickets he is selling
+			And write a review
+			Can delete reviews the User has written about sellers.
+	Log Out
+		Logs the user out of the profile.
+		Can no longer Add tickets to list
+		Can still view the profile of users
+		
+Walk through of PPT due Wednesday 30 Nov 22
+	Pointers on Architecture Diagram
+		Use case diagram
+		We need to make a diagram of our data flow.
+!		Client Side
+!		Server Side
+!			Front end 
+!			Back end
+				Docker
+!		Database
+!		3rd Party Service
+Pointers for Presentation
+	Chose how to demo project and optimize for functionality
+	Updating the phone number instead of full name as well
+		Pick functionalities we are sure work properly.
+	Elaborate on how and why we did things, thought processes. 
+	Divide slides - everyone needs to speak
+	Practice once together 
+	Add future enhancement slide
+		Any features we’d like to have but have not had time to implement
+			External API calls
+Reminders
+	Canvas announcement
+		Discusses final project
+		Final exam
+		Individual projects
+		Lectures
+		Keep an eye out for other announcements.
+Video walkthrough serves as backup incase of difficulties during presentation.
+
+Project Reports
+	Review requirements.
+
+Possible zoom presentation / Dan joins on zoom during the presentation
+
+
+
+
