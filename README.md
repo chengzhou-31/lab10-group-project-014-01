@@ -24,7 +24,7 @@ Team Number: 01
 
 ## API Details
 - `app.get('/')`: Redirects to home
-- `app.get('/home')`: When **not** logged in, shows upcoming tickets and all tickets, when logged in, shows tickets you are selling and tickets you are interested in
+- `app.get('/home')`: When not logged in, shows upcoming tickets and all tickets, when logged in, shows tickets you are selling and tickets you are interested in
 - `app.get('/login')`: Contains the login page and register page
 - `app.post('/login')`: Send post request to db, starts session, and allows user to login
 - `app.post('/register')`: Send post request to db, adds new user to it
@@ -38,3 +38,10 @@ Team Number: 01
 - `app.post('/edit_profiel')`: Post request to edit profile (is a modal on `/profile`). Makes changes to profile details, post request to db
 - `app.get('/logout')`: Allows user to logout, ends the user session
 - `app.get('/search')`: Sends all tickets to frontend, allows for searching (live)
+
+
+## Version Release Notes
+### v1.1
+- Minor bug fixes
+- Delete API for selling tickets works
+- Can now delete tickets you are selling in /profile
