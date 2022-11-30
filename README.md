@@ -23,4 +23,9 @@ Team Number: 01
 - Communication Plan: Our team will maintain communication primarily through the use of Discord. Our alternative form of communication will be by cellphone.
 
 ## API Details
-**TODO**
+- TODO
+
+## Version Release Notes - v1.1
+- Minor bug fixes
+- Delete API for selling tickets works
+- Can now delete tickets you are selling in /profile
