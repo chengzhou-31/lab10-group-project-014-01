@@ -5,41 +5,40 @@
             <div class="card-body">
 
               <!-- Basic info about the ticket -->
-              <h5 class="card-title">Event Title: <%= event.name %></h5>
+              <h3 class="card-title"><b><%= event.name %></b></h3>
               <h5 class="cart-title">Price: $<%= event.price %></h5>
               <h5 class="cart-title">Location: <%= event.location %></h5>
               <% var dateString = event.date; %>
               <% dateString = new Date(dateString).toUTCString(); %>
               <% dateString = dateString.split(' ').slice(0, 4).join(' '); %>
               <h5 id="date"class="cart-title">Date: <%= dateString %></h5>
-              <div class="row buttons">
+              <div class="row buttons" style="padding-top: 5px;">
                 <!-- Should redirect to the userpage. Unknown link atm -->
-                <form action="/profile/<%= event.user_id %>" method="GET">
+                <form action="/profile/<%= event.user_id %>" method="GET" style="padding-left: 15px;">
                   <!-- Ticket_id used to traceback to the seller when trying to access the page -->
                   <button id="bookButton" class="btn btn-warning" type="submit" value="<%= event.user_id %>" name="user_id">Contact</button>
                 </form>
 
                 <!-- Checks if the user can add to a list of interested in tickets -->
-                <div class="listing">
-                  <% 
-                  added = false
-                  interested.forEach(card => {
-                    if (card == event) {
-                      added = true
-                    }
-                  })
-                  if (!logged_in) {%>
+                <div class="listing" style="padding-left: 10px;">
+                  <% added = false %>
+                  <% interested.forEach(card => { %>
+                  <%    if (card == event) { %>
+                  <%      added = true %>
+                  <%    } %>
+                  <% }) %>
+                  <% if (!logged_in) {%>
                     <button class="btn btn-warning" disabled>Add to List</button>
                   <% } else if (!added) { %>
                     <!-- Changed to pass value of the ticket so that it is properly added to the interested in -->
                     <form action="/interested/add" method="POST">
-                      <button type="submit" class="btn btn-warning" value="<%= event.ticket_id %>" name="ticket_id">Add to list</button>
+                      <button type="submit" class="btn btn-outline-warning" value="<%= event.ticket_id %>" name="ticket_id">Add to list</button>
                     </form>
                   <% } else { %>
                     <form action="/interested/remove" method="POST">
-                      <button type="submit" class="btn btn-warning" value="<%= event.ticket_id %>" name="ticket_id">Remove from list</button>
+                      <button type="submit" class="btn btn-outline-warning" value="<%= event.ticket_id %>" name="ticket_id">Remove from list</button>
                     </form>
-                    <% } %>  
+                  <% } %>  
                 </div>
               </div>
             </div>

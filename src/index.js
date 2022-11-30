@@ -76,8 +76,20 @@ app.get("/login", (req, res) => {
     if(req.session.user){
         res.redirect('/home');
     } else {
-        res.render('pages/login', {
-            logged_in: req.session.user
+        const query = 'SELECT username FROM users;';
+
+        db.any(query).then(data => {
+            console.log(data);
+            res.render('pages/login', {
+                logged_in: req.session.user,
+                users: data
+            });
+        }).catch(error => {
+            res.render('pages/login', {
+                error: true,
+                message: error.message,
+                logged_in: req.session.user
+            });
         });
     }
 });
@@ -89,37 +101,10 @@ app.post("/login", async (req, res) => {
     const username = req.body.username;
     const query = `SELECT * FROM users WHERE username = $1;`;
 
-    //Do the database query
-    // db.one(query, [username])
-    // .then(async (valid) => {
-    //     // const match = await bcrypt.compare(req.body.password, password);
-    //     //Change if to if(match) when ready
-
-    //     //Then if a result is found check the password
-    //     if(req.body.password === valid.password){
-    //         //If they do match then store session data
-    //         user.username = username;
-    //         user.email = valid.email;
-    //         user.id = valid.user_id;
-
-    //         //Then save it as a session and go to the homepage
-    //         req.session.user = user;
-    //         req.session.save();
-    //         res.redirect("/home");
-    //     }
-    // })
-    // //In case the database cannot process the request in any fasion.
-    // .catch(err => {
-    //     console.log(err);
-    //     res.render('pages/login', {message: "Unknown login"});
-    // });
     db.any(query, [username]).then(async (data) => {
         if(data[0].username){
             const match = await bcrypt.compare(req.body.password, data[0].password);
             if(match){
-                // user.username = username;
-                // user.email = data[0].email;
-                // user.id = data[0].user_id;
                 const user = {
                     username: username,
                     email: data[0].email,
@@ -156,9 +141,7 @@ app.post('/register', async (req, res) => {
     const email = req.body.email;
     const username = req.body.username;
     const phone = req.body.phone;
-    if(req.body.password != req.body.passwordConf){
-        throw new Error('Password does not match');
-    }
+
     // console.log(req.body.password);
     const hash = await bcrypt.hash(req.body.password, 10);
     const query = `INSERT INTO users (username, password, email, name, phone)

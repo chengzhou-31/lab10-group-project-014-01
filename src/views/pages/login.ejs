@@ -24,6 +24,9 @@
                             <label for="username" class="form-label">Username</label>
                             <input type="text" class="form-control" id="username" name="username" placeholder="abcd1234" required>
                             <small id="userHelp" class="form-text text-muted">No special characters. Max 8 characters.</small>
+                            <div class="invalid-feedback">
+                                Username taken.
+                            </div>
                         </div>
                         <div class="mb-3">
                             <label for="phone" class="form-label">Phone Number</label>
@@ -80,13 +83,21 @@
 
             let username = document.querySelector('#username');
             let username_regex = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
+            let users = '<%- JSON.stringify(users) %>';
+            users = JSON.parse(users);
             username.addEventListener('input', e => {
                 console.log(username.value);
-                if(username_regex.test(username.value) || username.value.length > 8){
-                    username.setCustomValidity('Username too long or username contains special characters');  
-                } else {
-                    username.setCustomValidity('');
-                }
+                console.log(users[0].username);
+                users.forEach(user => {
+                    if(user.username == username.value){
+                        console.log('username taken.');
+                        username.setCustomValidity('Username is already taken.');  
+                    } else if(username_regex.test(username.value) || username.value.length > 8){
+                        username.setCustomValidity('Username too long or username contains special characters');  
+                    } else {
+                        username.setCustomValidity('');
+                    }
+                });
             });
 
             (function (){
