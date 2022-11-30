@@ -14,7 +14,7 @@
     <h1 id="homeTitle">Upcoming Events:</h1>
     <% object = upcoming_events %>
     <div class="card-columns">
-      <%- include ('../partials/cards') %>
+      <%- include ('../partials/cards', {interested: interested}) %>
     </div>
       
 
@@ -23,7 +23,7 @@
     
     <% object = tickets_for_sale %>
     <div class="card-columns">
-      <%- include ('../partials/cards') %>
+      <%- include ('../partials/cards', {interested: interested}) %>
     </div>
 
     <!-- If the user is logged in display their tickets they have interest in -->

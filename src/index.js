@@ -281,14 +281,14 @@ app.post('/interested/remove', (req, res) => {
     //Query to remove the ticket the user is interested in
     const query = `DELETE FROM interested_in WHERE user_id = $1 AND ticket_id = $2;`;
 
-    db.any(query, [req.body.user.id, req.body.ticket_id])
+    db.any(query, [req.session.user.id, req.body.ticket_id])
     .then(function(data) {
         //If successful, we return that it was removed
-        res.status(200).json({
-            status: 'Removed successfuly',
-            data: data,
-            message: 'Removed',
-        });
+        // res.status(200).json({
+        //     status: 'Removed successfuly',
+        //     data: data,
+        //     message: 'Removed',
+        // });
         res.redirect('/home');
     })
     .catch((err) => {
@@ -415,14 +415,21 @@ app.get('/profile/:id', (req, res) => {
     const getSales = `SELECT * FROM tickets t
     INNER JOIN seller_to_tickets st ON t.ticket_id = st.ticket_id
     WHERE user_id = $1 LIMIT 5;`;
-
+    const interestedQuery = `SELECT DISTINCT * FROM tickets t
+                        INNER JOIN interested_in i ON user_id = $1
+                        INNER JOIN seller_to_tickets st ON st.ticket_id = t.ticket_id
+                        WHERE t.ticket_id = i.ticket_id LIMIT 5;`;
+    var interested = [];
     db.task('profile-contents', async (task) => {
         var info = await task.any(getUserInfo, [person]);
         var reviews = await task.any(getReviews, [person]);
         var selling = await task.any(getSales, [person]);
+        if(req.session.user){
+            interested = await task.any(interestedQuery, [req.session.user.id]);
+        }
         info = info[0];
-        return{info, reviews, selling};
-    }).then(({info, reviews, selling}) => {
+        return{info, reviews, selling, interested};
+    }).then(({info, reviews, selling, interested}) => {
         res.render('pages/profile', {
             logged_in: req.session.user,
             person: person,
@@ -432,6 +439,7 @@ app.get('/profile/:id', (req, res) => {
             phone: info.phone,
             email: info.email,
             name: info.name,
+            interested: interested,
         });
     }).catch((err) => {
         console.log(err.message);
