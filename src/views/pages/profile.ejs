@@ -23,11 +23,10 @@
                         <% if(logged_in){ %>
                             <% if(logged_in.id == person){%>
                                 <a class="btn btn-primary" onclick="showAdd()">Add Listing</a>
-                                
+                                <a class="btn btn-primary" onclick="showEdit()">Edit Profile</a>
                             <%} else {%>
                                 <a class="btn btn-primary" onclick="showAddReview()">Add Review</a>
                             <% } %>
-                            <a class="btn btn-primary" onclick="showEdit()">Edit Profile</a>
                         <%}%>
                     </div>
                 </div>
