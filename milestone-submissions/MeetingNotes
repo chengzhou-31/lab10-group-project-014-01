@@ -61,6 +61,45 @@ Contact Model notifications would require another table.
 
 How to integrate second hand tickets.
 
+11/07/22 TA meeting prep
+	-Login page:
+		-Attentive Api’s 
+		-Set up a basic page for it
+		-Added in partials.
+	-Register Page:
+		-Set up basic page for it
+		-Gave it a basic style for the registration page
+			-Need to add a route for the db.
+	-Largely Partials and creating a specific style.
+		-Same style in the header partial also created logos for QuickTix.
+	- Added DB and test data
+		- Tables include users, reviews, tickets, and relationship tables
+	-Make sure the Login page is fully functional and the same with the Registration page.
+	-Start working through API’s
+
+11/07/22 TA meeting Notes
+	-Liam will be doing the home page 
+Remember this: Every single piece of code you use makes sure that it could be re-usable.
+Things should be able to get removed and added.
+	-No hard coding any competent code.
+	-Any information you take should be coming through the backend.
+	- Diego needs to pull and work on getting the login page finished up.
+How to push into main:
+	-Switch to main with checkout
+	-Pull
+	-Git checkout -
+		-Takes you to the original branch
+	-Git merge main.
+		-Might bring you some conflicts.
+	-Commit and then make git push.
+Please make sure you have the updated main files.
+	- Diego needs to also work on the homepage and also create API’s for his login.
+	-Dan needs to pick up another project and finish creating API’s for register.
+	-Cheng and Matt will work on homepage API’s.
+		-Homepage and Database guys need to sit down for what filters and features/information that will be on the homepage.
+		-Matt can start working on index.js and filters.
+	-Louis will be working creating a cart page.
+
 
 
 
