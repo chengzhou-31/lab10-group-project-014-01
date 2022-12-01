@@ -1,7 +1,58 @@
-.body {
+
+/* Body of every page should look pretty much the same */
+body {
     background-color: black;
 }
 
-#pa {
-    background-color: aqua;
+
+
+/* Home page styles */
+#homeTitle {
+    color: goldenrod;
+    font-family: 'Shrikhand';
+} 
+
+
+p {
+    color: lightgray;
+}
+
+
+
+/* Navbar based styles */
+.link {
+    font-family: 'Shrikhand';
+    color: goldenrod;
+}
+
+.link:hover{
+    color: green;
+}
+
+
+
+/* Css for the profile */
+#profileText {
+    color: white;
+}
+
+.profileHeader {
+    color: goldenrod;
+}
+
+
+/* Card specific styles */
+.ticket{
+    border: 2px solid goldenrod; 
+    max-width: 40%;
+}
+
+.review{
+    background-color: rgb(30, 30, 30);
+    color: white;
+}
+
+#date{
+    display:flex; flex-direction:row;
+    column-gap: 10px;
 }

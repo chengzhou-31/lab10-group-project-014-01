@@ -1,0 +1,14 @@
+<% object.forEach(review => { %>
+<div class="row mb-3">
+    <div class="col">
+        <div class="card review">
+            <div class="card-body">
+                <%console.log(review);%>
+            <h5 class="card-title">Rating: <%= review.rating %></h5>
+            <%console.log(review.rating);%>
+                <h5 class="cart-title">Review: <%= review.review %></h5>
+            </div>
+        </div>
+    </div>
+</div>
+<%});%>
