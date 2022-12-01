@@ -70,6 +70,7 @@
 <%- include ('../partials/footer') %>
 
 <script>
+    //Adds a delete ticket but to all tickets you are selling
     function showDelete(){
         // get selling, find selling tickets div
         let selling_tickets = '<%- JSON.stringify(selling) %>';
@@ -111,8 +112,8 @@
             }
         }
     }
-    // console.log(person);
-    // console.log(logged_in);
+
+    //Makes delete button only visible to the user who is selling it
     let user = '<%- JSON.stringify(logged_in) %>';
     user = JSON.parse(user);
     let person = '<%- JSON.stringify(person) %>';
@@ -122,6 +123,7 @@
 
     if(user && (user.id == person)){console.log(showDelete())}
 
+    //Hides all buttons on the page except where specified
     function hideButtons(){
         
         var element = document.querySelectorAll('.buttons .btn');

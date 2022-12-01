@@ -50,6 +50,7 @@ app.use(
     })
 );
 
+//Lets the pages use the style sheet
 app.use(express.static(__dirname + "/resources"));
 
 
@@ -73,9 +74,11 @@ app.get("/", (req, res) => {
 //Login page
 //Loads the login page when the page is attempted to be accessed
 app.get("/login", (req, res) => {
+    //There is no reason to login if you're already logged in
     if(req.session.user){
         res.redirect('/home');
     } else {
+        //Otherwise load the page 
         const query = 'SELECT username FROM users;';
 
         db.any(query).then(data => {
@@ -99,29 +102,32 @@ app.get("/login", (req, res) => {
 //When the user attempts to login, send a request to the database to check if the user is valid
 // Used when the user attempts to submit a login request
 app.post("/login", async (req, res) => {
+    //Get the username
     const username = req.body.username;
     const query = `SELECT * FROM users WHERE username = $1;`;
 
     const users = await db.any('SELECT username FROM users;');
     console.log(users);
 
+    //Process the log in
     db.any(query, [username]).then(async (data) => {
+        //Check that the username exists
         if(data[0].username){
+            //Get the password they enter and compare it to the database
             const match = await bcrypt.compare(req.body.password, data[0].password);
             if(match){
+                //Then save the data if it was the proper login
                 const user = {
                     username: username,
                     email: data[0].email,
                     phone: data[0].phone,
                     id: data[0].user_id
                 }
-                // req.session.user = {
-                //     api_key: process.env.API_KEY,
-                // };
                 req.session.user = user;
                 req.session.save();
                 res.redirect('/home');
             } else {
+                //Otherwise just reload the page
                 throw new Error(`Incorrect username or password.`); 
             }
         } else {
@@ -142,16 +148,18 @@ app.post("/login", async (req, res) => {
 //Register is added as modal not a page anymore
 //Inserts a new user into the database successfuly. 
 app.post('/register', async (req, res) => {
+    //Get the data
     const name = req.body.username;
     const email = req.body.email;
     const username = req.body.username;
     const phone = req.body.phone;
 
-    // console.log(req.body.password);
+    //Encrpty the password
     const hash = await bcrypt.hash(req.body.password, 10);
     const query = `INSERT INTO users (username, password, email, name, phone)
                 VALUES ($1, $2, $3, $4, $5);`;
 
+    //Then store the new account in the database
     db.one(query, [username, hash, email, name, phone]).then(
         res.redirect('/login')
     ).catch(error => {
@@ -185,13 +193,12 @@ app.get("/home", (req, res) => {
                             INNER JOIN seller_to_tickets st ON st.ticket_id = t.ticket_id;`;
 
 
-    //Finds if the current date is between the current month and next month?
-    //Need more test cases for when the date is outside 1 month from now
+    //Finds list of tickets for events that are occuring in the future
     const comingUpQuery = `SELECT * FROM tickets t
-                        INNER JOIN seller_to_tickets st ON st.ticket_id = t.ticket_id
-                        WHERE (EXTRACT(MONTH FROM date) BETWEEN EXTRACT(MONTH FROM CURRENT_DATE) AND EXTRACT(MONTH FROM CURRENT_DATE) + 1) 
-                        AND (EXTRACT(YEAR FROM date) = EXTRACT(YEAR FROM CURRENT_DATE))
-                        ORDER BY date LIMIT 5;`;
+                            INNER JOIN seller_to_tickets st ON st.ticket_id = t.ticket_id
+                            WHERE CURRENT_DATE <= date
+                            ORDER BY date LIMIT 5;`;
+
     //List of tickets the user is selling
     const sellingQuery = `SELECT * FROM tickets t
                           INNER JOIN seller_to_tickets st ON t.ticket_id = st.ticket_id
@@ -235,10 +242,6 @@ app.get("/home", (req, res) => {
 
 
 //If a user is interedted in a ticket it should be added to the DB
-//BUG: Users can click the button multiple times to keep adding same ticket
-//To their interested in
-//Temp solution: Made it so when pulling from the DB it only selects distinct
-//Should check if the insertion is unique and not repetitive
 app.post('/interested/add', (req, res) => {
     //Query to add the ticket.
     //Returns the data inserted
@@ -248,16 +251,11 @@ app.post('/interested/add', (req, res) => {
     //Changed to session as this is only accessed if the user is logged in
     db.query(query, [req.session.user.id, req.body.ticket_id])
     .then(function(data){
-        //Just returns to console/log that it was inserted
-        // res.status(201).json({
-        //     status: 'success',
-        //     data: data,
-        //     message: 'New ticket interested in',
-        // });
+        //Just reload the home
         res.redirect('/home');
     })
     .catch(err => {
-        //If it can't be inserted just render home
+        //If it can't be inserted just go to home page
         console.log(err.message);
         res.redirect('/home');
     });
@@ -271,12 +269,7 @@ app.post('/interested/remove', (req, res) => {
 
     db.any(query, [req.session.user.id, req.body.ticket_id])
     .then(function(data) {
-        //If successful, we return that it was removed
-        // res.status(200).json({
-        //     status: 'Removed successfuly',
-        //     data: data,
-        //     message: 'Removed',
-        // });
+        //Load home page if removed
         res.redirect('/home');
     })
     .catch((err) => {
@@ -285,12 +278,6 @@ app.post('/interested/remove', (req, res) => {
     });
 });
 
-
-// app.get('/add', (req,res) => {
-//     res.render('pages/add',{
-//         logged_in: req.session.user,
-//     });
-// });
 
 
 //Adds a ticket to the database
@@ -307,10 +294,10 @@ app.post('/ticket/add', (req, res) =>{
                    VALUES ($1, $2, $3, $4, $5, $6) returning ticket_id;`;
     
     //Link the ticket to the user who added it.
-    //TODO: ticket_id needs to be looked at
     const insertTicket = `INSERT INTO seller_to_tickets (user_id, ticket_id)
                 VALUES($1, $2) RETURNING *;`;
 
+    //Insert the ticket into the database
     db.query(insert, [
         req.body.title,
         price,
@@ -321,12 +308,9 @@ app.post('/ticket/add', (req, res) =>{
         user,
     ])
     .then( (value) =>{
+        //Connect the seller to the ticket
         db.query(insertTicket, [req.session.user.id, value[0].ticket_id])
         .then( (data) =>{
-            // res.status(201).json({
-            //     data: data,
-            //     message: 'Success',
-            // });
             res.redirect('/home')
         })
         .catch((err) => {
@@ -349,7 +333,10 @@ app.post('/ticket/add', (req, res) =>{
 
 //Remove a ticket from the database
 app.post("/ticket/delete", (req, res) => {
+    //Get the ticket id
     ticket_id = req.body.ticket_id;
+
+    //Process the delete ticket through 3 different queries
     db.task("delete-ticket", (task) => {
         return task.batch([
             //Delete from the seller
@@ -374,7 +361,7 @@ app.post("/ticket/delete", (req, res) => {
                     tickets
                 WHERE
                     ticket_id = $1;`,
-                    [ticket_id]              //List of params aka ticket id
+                    [ticket_id]              
             ),
             
             
@@ -382,7 +369,7 @@ app.post("/ticket/delete", (req, res) => {
         ])
     })
     .then(
-        //What do to after the ticket has been removed, if it was removed
+        //Just load home page
         res.redirect('/home')
     ).catch((err) => {
         console.log(err.message);
@@ -394,30 +381,47 @@ app.post("/ticket/delete", (req, res) => {
 // Used to view your profile
 app.get('/profile/:id', (req, res) => {
 
+    //Get the id of the profile
     const person = req.params.id;
 
+    //Gets the users info to display
     const getUserInfo = `SELECT * FROM users WHERE user_id = $1;`;
+
+    //Get the review for the users and who wrote them
     const getReviews = `SELECT r.review_id, r.user_id, date, rating, review FROM reviews r
                         INNER JOIN users_to_reviews ur ON ur.user_id = $1
                         WHERE ur.review_id = r.review_id;`;
+
+    //Get the tickets they're selling
     const getSales = `SELECT * FROM tickets t
     INNER JOIN seller_to_tickets st ON t.ticket_id = st.ticket_id
     WHERE user_id = $1 LIMIT 5;`;
+
+    //And tickets that the user is interested in
     const interestedQuery = `SELECT DISTINCT * FROM tickets t
                         INNER JOIN interested_in i ON user_id = $1
                         INNER JOIN seller_to_tickets st ON st.ticket_id = t.ticket_id
                         WHERE t.ticket_id = i.ticket_id LIMIT 5;`;
+
+
     var interested = [];
+
     db.task('profile-contents', async (task) => {
+
+        //Then process the queries
         var info = await task.any(getUserInfo, [person]);
         var reviews = await task.any(getReviews, [person]);
         var selling = await task.any(getSales, [person]);
         if(req.session.user){
             interested = await task.any(interestedQuery, [req.session.user.id]);
         }
+        //Passed back as an array of json's, but there is only 1 
         info = info[0];
+        //We want to return these queries results
         return{info, reviews, selling, interested};
+
     }).then(({info, reviews, selling, interested}) => {
+        //Then render the profile page with the info that was retrieved
         res.render('pages/profile', {
             logged_in: req.session.user,
             person: person,
@@ -436,26 +440,25 @@ app.get('/profile/:id', (req, res) => {
 });
 
 
-/**
- *  Query for finding reviews for a specific user
-    const reviewsQuery = `SELECT * FROM reviews r
-                     INNER JOIN users_to_reviews ur ON r.review_id = ur.review_id
-                     WHERE user_id = $1;`;
- */
+
 /**
  * Used to add a review to a user. Need to implement a button that does so.
  */
 app.post('/review/add', (req, res) => {
+    //Insert query
     const query = `INSERT INTO reviews(user_id, date, rating, review)
                    VALUES($1, CURRENT_DATE, $2, $3) RETURNING review_id;`;
 
+    //Who the review is for
     const applyReview = `INSERT INTO users_to_reviews(user_id, review_id) VALUES ($1, $2);`;
 
+    //Process the insertion
     db.query(query, [req.session.user.id, req.body.rating, req.body.review])
     .then((data) => {
-        console.log(data);
+        //Then since the insert review returns the review_id we use that to process who the review is for
         db.query(applyReview, [req.body.id, data[0].review_id])
         .then((data) => {
+            //Then just releoad the page
             res.redirect(`/profile/` + req.body.id);
         });
         
@@ -468,9 +471,9 @@ app.post('/review/add', (req, res) => {
 
 /**
  * Removes a review from the database
- * Currently unuseable
  */
 app.post('/review/delete/:id', (req,res) => {
+    //Delete the review and who wrote the review
     db.task("delete-review", (task) => {
         return task.batch([
             task.none(`DELETE FROM users_to_reviews
@@ -482,6 +485,7 @@ app.post('/review/delete/:id', (req,res) => {
         ])
     })
     .then(
+        //Just reload the page again
         res.redirect('/profile/' + req.body.user_id)
     )
     .catch((err) => {
@@ -492,34 +496,33 @@ app.post('/review/delete/:id', (req,res) => {
     });
 });
 
-
+/**
+ * If the user makes a change to their information
+ */
 app.post('/edit_profile', async(req, res) => {
+    //Grab the info to store
     const name = req.body.name;
     const email = req.body.email;
     const username = req.body.username;
     const phone = req.body.phone;
 
-    console.log(req.session.user.id);
+    //Encrypt the new password
     const hash = await bcrypt.hash(req.body.password, 10);
     const query = `UPDATE users SET username = $1, password = $2, email = $3, name = $4, phone = $5
                 WHERE user_id = ${req.session.user.id};`;
 
-    // console.log('got past hash')
+    //Then process the update
     db.oneOrNone(query, [username, hash, email, name, phone]).then(() => {
-        // console.log('edit successful');
+        // reload the page
         res.redirect(`/profile/` + req.body.person);
     }).catch(error => {
-        // console.log(error.message);
         res.redirect(`/profile/` + req.body.person);
     });
 });
 
 
 //Ticketmaster api call
-//TODO: add pages to load
-//TODO: add results to pass
-//Should only be used when trying to find some tickets?
-//Maybe not used
+// Not used
 app.get('/ticketmaster', (req, res) => {
     axios({
         url: `https://app.ticketmaster.com/discovery/v2/events.json`,
@@ -560,6 +563,7 @@ app.listen(3000);
 console.log('Server is listening on port 3000');
 
 
+// Search feature
 app.get('/search', (req, res) => {
     const query = "SELECT * FROM tickets;";
 
