@@ -1,9 +1,9 @@
 INSERT INTO users(username, password, email, name, phone)
 VALUES('CUJohnnathan', 'cokecan21', 'john@gmail.com', 'John', '7204495050'),
-('Abigale44','4as124agf21','abby@colorado.edu','Abby'),
+('Abigale44','4as124agf21','abby@colorado.edu','Abby', null),
 ('YakesDramel','drdre441','yakesdr4192@colorado.edu','Yakes', '57944014172'),
-('Test','Test','test@colorado.edu','Test'),
-('Admin','password','admin@colorado.edu','Admin');
+('Test','Test','test@colorado.edu','Test', null),
+('Admin','password','admin@colorado.edu','Admin', null);
 
 INSERT INTO tickets(name, price, event_type, location, time, date)
 VALUES('Taylor Swift', 19.99, 'concert', 'San Francisco', null, '2023-05-15'),
